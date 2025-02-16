@@ -1,0 +1,37 @@
+{
+  "name": "who-sent-this-backend",
+  "version": "1.0.0",
+  "description": "backend for who-sent-this",
+  "keywords": [
+    "whosentthis",
+    "who",
+    "sent",
+    "this",
+    "backend"
+  ],
+  "license": "ISC",
+  "author": "Sahaj Bhatt",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "dev": "tsx watch src/index.ts"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^5.0.0",
+    "@types/mongoose": "^5.11.96",
+    "@types/node": "^22.13.4",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.8",
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.10.1"
+  }
+}
