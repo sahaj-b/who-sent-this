@@ -17,7 +17,14 @@ const messageSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
-    repliedToMessageId: String,
+    allowReply: {
+      type: Boolean,
+      required: true,
+    },
+    repliedToMessageId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Message",
+    },
   },
   { timestamps: { updatedAt: false } },
 );

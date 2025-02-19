@@ -8,7 +8,7 @@ type AsyncRequestHandler = (
 
 function asyncHandler(requestHandler: AsyncRequestHandler) {
   return (req: Request, res: Response, next: NextFunction) => {
-    Promise.resolve(requestHandler(req, res, next)).catch(next);
+    Promise.resolve(requestHandler(req, res, next)).catch(next); // .catch(next) will invoke express's builtin error handler;
   };
 }
 
