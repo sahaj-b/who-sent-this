@@ -4,10 +4,11 @@ import {
   registerExistingUserWithEmail,
   registerUserWithEmail,
   registerUserAnonymously,
-  changeUserSettings,
+  changeUserSettings as updateUserSettings,
   loginUser,
   logoutUser,
   refreshAccessToken,
+  getUserInfo,
 } from "../controllers/user.controller";
 
 const router = Router();
@@ -17,11 +18,12 @@ router.route("/register-with-email").post(registerUserWithEmail);
 router
   .route("/register-existing-with-email")
   .post(registerExistingUserWithEmail);
-router.route("/change-settings").post(changeUserSettings);
 router.route("/login").post(loginUser);
 router.route("/refresh-token").post(refreshAccessToken);
 
 // Secured routes
 router.route("/logout").post(verifyJWT, logoutUser);
+router.route("/info").post(verifyJWT, getUserInfo);
+router.route("/update-settings").post(verifyJWT, updateUserSettings);
 
 export default router;

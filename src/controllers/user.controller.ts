@@ -66,16 +66,56 @@ const logoutUser = asyncHandler(async (_, res) => {
     .json(new ApiResponse(200, "User Logged out Succesfully", {}));
 });
 
+const getUserInfo = asyncHandler(async (_, res) => {
+  const { passwordHash, refreshToken, ...userToReturn } =
+    res.locals.user.toObject();
+  res
+    .status(200)
+    .json(new ApiResponse(200, "Sent User info successfuly", userToReturn));
+});
+
 const changeUserSettings = asyncHandler(async (req, res) => {
-  // get name?, receivingPaused?, password?, newPassword? from req
-  // validate
-  // get user id from cookies
-  // check if password == newPassword
-  // update in db
-  // verify updation
-  // return response without password/refreshToken
   let { name, receivingPaused, password, newPassword } = req.body;
   name = name.trim();
+  if (![name, receivingPaused, newPassword].some((i) => i)) {
+    throw new ApiError(400, "No settings provided to update");
+  }
+  if (newPassword && !password) {
+    throw new ApiError(400, "Password is required to change password");
+  }
+  if (newPassword && password === newPassword) {
+    throw new ApiError(400, "New password can't be same as old password");
+  }
+  const user = res.locals.user;
+
+  if (!user) {
+    throw new ApiError(500, "Something went wrong while getting current User");
+  }
+  if (name && name !== user.name) {
+    user.name = name;
+  }
+  if (receivingPaused && typeof receivingPaused !== "boolean") {
+    throw new ApiError(400, "Invalid receivingPaused field provided");
+  }
+  if (receivingPaused && receivingPaused !== user.receivingPaused) {
+    user.receivingPaused = receivingPaused;
+  }
+  if (password) {
+    if (!(await user.isPasswordCorrect(password))) {
+      throw new ApiError(401, "Incorrect Password");
+    }
+  }
+  if (newPassword) {
+    User.schema.methods.validatePassword(newPassword);
+    user.passwordHash = newPassword;
+  }
+  await user.save();
+  const { passwordHash, refreshToken, ...userToReturn } = user.toObject();
+  res
+    .status(200)
+    .json(
+      new ApiResponse(200, "User settings updated succesfully", userToReturn),
+    );
 });
 
 const registerExistingUserWithEmail = asyncHandler(async (req, res) => {
@@ -188,6 +228,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 });
 
 export {
+  getUserInfo,
   changeUserSettings,
   registerExistingUserWithEmail,
   registerUserWithEmail,
