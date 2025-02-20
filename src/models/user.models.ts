@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import jwt, { SignOptions } from "jsonwebtoken";
 import ApiError from "../utils/ApiError";
 import { customAlphabet } from "nanoid";
+import { BCRYPT_ROUNDS, PASSWORD_MIN_LENGTH } from "../constants";
 const nanoid = customAlphabet(
   "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
   8,
@@ -46,7 +47,7 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
     methods: {
       validatePassword: function (password: string) {
-        if (password.length < 8) {
+        if (password.length < PASSWORD_MIN_LENGTH) {
           throw new ApiError(
             400,
             "Password must be at least 8 characters long",
@@ -101,7 +102,7 @@ const userSchema = new mongoose.Schema(
 
 userSchema.pre("save", async function (next) {
   if (this.passwordHash && this.isModified("passwordHash")) {
-    this.passwordHash = await bcrypt.hash(this.passwordHash, 6);
+    this.passwordHash = await bcrypt.hash(this.passwordHash, BCRYPT_ROUNDS);
   }
   if (!this.shortId) {
     let id;

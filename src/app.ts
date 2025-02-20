@@ -1,6 +1,9 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import rateLimit from "express-rate-limit";
+import userRouter from "./routes/user.router";
+import { RATE_LIMITER_MAX, RATE_LIMITER_WINDOW } from "./constants";
 
 const app = express();
 app.use(
@@ -9,11 +12,14 @@ app.use(
     credentials: true,
   }),
 );
+const limiter = rateLimit({
+  windowMs: RATE_LIMITER_WINDOW,
+  max: RATE_LIMITER_MAX,
+});
+app.use(limiter);
 app.use(cookieParser());
 app.use(express.json({ limit: "16kb" }));
 // app.use(express.urlencoded({ extended: true }));
-
-import userRouter from "./routes/user.router";
 
 //using routers as a middleware
 app.use("/api/users", userRouter);

@@ -23,7 +23,6 @@ router
   .post(registerExistingUserWithEmail);
 router.route("/logout").post(verifyJWT, logoutUser);
 router.route("/info").post(verifyJWT, getUserInfo);
-router.route("/change-settings").post(verifyJWT, changeUserSettings);
-router.route("");
+router.route("/update-settings").post(verifyJWT, changeUserSettings);
 
 export default router;
