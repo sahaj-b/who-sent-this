@@ -76,7 +76,7 @@ const getUserInfo = asyncHandler(async (_, res) => {
 
 const changeUserSettings = asyncHandler(async (req, res) => {
   let { name, receivingPaused, password, newPassword } = req.body;
-  name = name.trim();
+  name = name?.trim();
   if (![name, receivingPaused, newPassword].some((i) => i)) {
     throw new ApiError(400, "No settings provided to update");
   }
@@ -119,50 +119,79 @@ const changeUserSettings = asyncHandler(async (req, res) => {
 });
 
 const registerExistingUserWithEmail = asyncHandler(async (req, res) => {
-  // get email, pass from req
-  // validate email, pass
-  // get user id from cookies
-  // update email, pass in db
-  // verify updation
-  // return response without password/refreshToken
   let { email, password } = req.body;
   email = email.trim();
+  if (!email) {
+    throw new ApiError(400, "Email is required");
+  }
+  if (!password) {
+    throw new ApiError(400, "Password is required");
+  }
   User.schema.methods.validateEmail(email);
   User.schema.methods.validatePassword(password);
+
+  if (await User.findOne({ email: email })) {
+    throw new ApiError(400, "Email already exists");
+  }
+  const user = res.locals.user;
+
+  if (!user) {
+    throw new ApiError(500, "Something went wrong while getting current user");
+  }
+  if (user.email) {
+    throw new ApiError(400, "User is already registered with email");
+  }
+  user.email = email;
+  user.passwordHash = password;
+  await user.save();
+  const { passwordHash, refreshToken, ...userToReturn } = user.toObject();
+  res
+    .status(200)
+    .json(
+      new ApiResponse(200, "Updated user with email successfuly", userToReturn),
+    );
 });
 
-const registerUserAnonymously = asyncHandler(async (req, res) => {
+const registerUserAnonymouslyAndLogin = asyncHandler(async (req, res) => {
   let { name } = req.body;
-  name = name.trim();
+  name = name?.trim();
 
   console.log("Registering anonymously: ", name);
 
   const user = await User.create({
-    name: name,
+    name: name || undefined,
     receivingPaused: false,
   });
+  user.refreshToken = user.generateRefreshToken();
+  await user.save();
 
   const createdUser = await User.findById(user._id).select("-refreshToken");
 
   if (!createdUser) {
     throw new ApiError(500, "Internal server error while registering user");
   }
+  const options: CookieOptions = {
+    httpOnly: true,
+    secure: true,
+  };
 
   return res
     .status(200)
+    .cookie("accessToken", user.generateAccessToken(), options)
+    .cookie("refreshToken", user.refreshToken, options)
     .json(
       new ApiResponse(
         200,
-        "User anonymously registered succesfully",
+        "User registered anonymously and logged in succesfully",
         createdUser,
       ),
     );
 });
 
-const registerUserWithEmail = asyncHandler(async (req, res) => {
+const registerUserWithEmailAndLogin = asyncHandler(async (req, res) => {
   let { email, password, name } = req.body;
-  email = email.trim();
-  name = name.trim();
+  email = email?.trim();
+  name = name?.trim();
 
   console.log("Registering with email: ", email);
 
@@ -175,11 +204,13 @@ const registerUserWithEmail = asyncHandler(async (req, res) => {
   }
 
   const user = await User.create({
-    name: name,
+    name: name || undefined,
     email: email,
     passwordHash: password,
     receivingPaused: false,
   });
+  user.refreshToken = user.generateRefreshToken();
+  await user.save();
 
   const createdUser = await User.findById(user._id).select(
     "-passwordHash -refreshToken",
@@ -189,8 +220,15 @@ const registerUserWithEmail = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Internal server error while registering user");
   }
 
+  const options: CookieOptions = {
+    httpOnly: true,
+    secure: true,
+  };
+
   return res
     .status(200)
+    .cookie("accessToken", user.generateAccessToken(), options)
+    .cookie("refreshToken", user.refreshToken, options)
     .json(new ApiResponse(200, "User registered succesfully", createdUser));
 });
 
@@ -231,8 +269,8 @@ export {
   getUserInfo,
   changeUserSettings,
   registerExistingUserWithEmail,
-  registerUserWithEmail,
-  registerUserAnonymously,
+  registerUserWithEmailAndLogin,
+  registerUserAnonymouslyAndLogin,
   loginUser,
   logoutUser,
   refreshAccessToken,
