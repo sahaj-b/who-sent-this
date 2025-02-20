@@ -2,9 +2,18 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt, { SignOptions } from "jsonwebtoken";
 import ApiError from "../utils/ApiError";
+import { customAlphabet } from "nanoid";
+const nanoid = customAlphabet(
+  "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+  8,
+);
 
 const userSchema = new mongoose.Schema(
   {
+    shortId: {
+      type: String,
+      unique: true,
+    },
     name: {
       type: String,
       trim: true,
@@ -93,6 +102,17 @@ const userSchema = new mongoose.Schema(
 userSchema.pre("save", async function (next) {
   if (this.passwordHash && this.isModified("passwordHash")) {
     this.passwordHash = await bcrypt.hash(this.passwordHash, 6);
+  }
+  if (!this.shortId) {
+    let id;
+    let exists = true;
+    const UserModel = this.constructor as mongoose.Model<any>;
+    do {
+      id = nanoid();
+
+      exists = Boolean(await UserModel.exists({ shortId: id }));
+    } while (exists);
+    this.shortId = id;
   }
   next();
 });
