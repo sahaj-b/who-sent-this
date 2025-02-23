@@ -22,7 +22,7 @@ router
   .route("/register-existing-with-email")
   .post(registerExistingUserWithEmail);
 router.route("/logout").post(verifyJWT, logoutUser);
-router.route("/info").post(verifyJWT, getUserInfo);
-router.route("/update-settings").post(verifyJWT, changeUserSettings);
+router.route("/me").get(verifyJWT, getUserInfo);
+router.route("/me").patch(verifyJWT, changeUserSettings);
 
 export default router;
