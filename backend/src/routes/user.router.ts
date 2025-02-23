@@ -1,7 +1,7 @@
 import { Router } from "express";
 import verifyJWT from "../middlewares/auth.middleware";
 import {
-  registerExistingUserWithEmail,
+  addEmailToExistingUser,
   registerUserWithEmailAndLogin,
   changeUserSettings,
   registerUserAnonymouslyAndLogin,
@@ -19,8 +19,8 @@ router.route("/refresh-token").post(refreshAccessToken);
 
 // Secured routes
 router
-  .route("/register-existing-with-email")
-  .post(registerExistingUserWithEmail);
+  .route("/add-email")
+  .post(addEmailToExistingUser);
 router.route("/logout").post(verifyJWT, logoutUser);
 router.route("/me").get(verifyJWT, getUserInfo);
 router.route("/me").patch(verifyJWT, changeUserSettings);
