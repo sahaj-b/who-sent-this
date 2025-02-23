@@ -13,14 +13,13 @@ const sendMessage = asyncHandler(async (req, res) => {
   }
   let { recipientId, text, replyToMsgId, allowReply } = req.body;
   text = text?.trim();
-  if (!allowReply || typeof allowReply !== "boolean") {
+  if (typeof allowReply !== "boolean") {
     allowReply = replyToMsgId ? false : true;
   }
   if (!recipientId) {
     throw new ApiError(400, "No recipient ID provided");
   }
   if (!text || typeof text !== "string") {
-    console.log(text);
     throw new ApiError(400, "Invalid message text");
   }
   if (text.length > MAX_MESSAGE_CHARACTERS) {
@@ -39,14 +38,20 @@ const sendMessage = asyncHandler(async (req, res) => {
       "Reply messages are not allowed to have allowReply set to true",
     );
   }
-  if (replyToMsgId && !Types.ObjectId.isValid(replyToMsgId)) {
-    throw new ApiError(400, "Invalid message ID provided for reply");
-  }
-  if (replyToMsgId && !(await Message.findById(replyToMsgId))) {
-    throw new ApiError(
-      400,
-      "Cannot reply to an non-existing or deleted message",
-    );
+  if (replyToMsgId) {
+    if (!Types.ObjectId.isValid(replyToMsgId)) {
+      throw new ApiError(400, "Invalid message ID provided for reply");
+    }
+    const replyToMessage = await Message.findById(replyToMsgId);
+    if (!replyToMessage) {
+      throw new ApiError(
+        400,
+        "Cannot reply to an non-existing or deleted message",
+      );
+    }
+    if (!replyToMessage.allowReply) {
+      throw new ApiError(400, "This message doesn't allow replies");
+    }
   }
   await Message.create({
     sentBy: user._id,
