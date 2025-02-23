@@ -1,0 +1,60 @@
+@server = http://localhost:3000/api
+### login
+POST {{server}}/users/login
+
+{
+  "email": "tes@tes.com",
+  "password": "testtest"
+}
+
+### logout
+POST {{server}}/users/logout
+
+### register anonymous
+POST {{server}}/users/register-anonymous
+
+### register with email
+POST {{server}}/users/register-with-email
+
+{
+  "email": "@test.com",
+  "password": "password123"
+}
+
+### register existing with email
+POST {{server}}/users/register-existing-with-email
+
+{
+  "email": "test1@test.com",
+  "password": "password123"
+}
+
+### refresh token
+POST {{server}}/users/refresh-token
+
+### info
+GET {{server}}/api/users/me
+
+
+### change settings
+PATCH {{server}}/users/me
+
+{
+  "password": "password12",
+  "newPassword":"password123",
+  "receivingPaused": false,
+  "name": "testname"
+}
+
+### send message
+GET {{server}}/messages/send
+
+{
+  "recipientId": "shortID", 
+  "message": "Hello 1234 testing",
+  "replyTo": "msgID"
+}
+
+### get messages
+GET {{server}}/messages/get
+
