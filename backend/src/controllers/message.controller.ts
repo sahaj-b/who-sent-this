@@ -14,7 +14,8 @@ const sendMessage = asyncHandler(async (req, res) => {
   let { recipientId, text, replyToMsgId, allowReply } = req.body;
   text = text?.trim();
   if (typeof allowReply !== "boolean") {
-    allowReply = replyToMsgId ? false : true;
+    // allowReply = replyToMsgId ? false : true;
+    allowReply = true;
   }
   if (!recipientId) {
     throw new ApiError(400, "No recipient ID provided");
@@ -32,12 +33,12 @@ const sendMessage = asyncHandler(async (req, res) => {
   if (!recepient) {
     throw new ApiError(400, "Invalid Recipient ID");
   }
-  if (replyToMsgId && allowReply) {
-    throw new ApiError(
-      400,
-      "Reply messages are not allowed to have allowReply set to true",
-    );
-  }
+  // if (replyToMsgId && allowReply) {
+  //   throw new ApiError(
+  //     400,
+  //     "Reply messages are not allowed to have allowReply set to true",
+  //   );
+  // }
   if (replyToMsgId) {
     if (!Types.ObjectId.isValid(replyToMsgId)) {
       throw new ApiError(400, "Invalid message ID provided for reply");
