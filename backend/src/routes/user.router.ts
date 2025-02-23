@@ -18,11 +18,10 @@ router.route("/login").post(loginUser);
 router.route("/refresh-token").post(refreshAccessToken);
 
 // Secured routes
-router
-  .route("/add-email")
-  .post(addEmailToExistingUser);
-router.route("/logout").post(verifyJWT, logoutUser);
-router.route("/me").get(verifyJWT, getUserInfo);
-router.route("/me").patch(verifyJWT, changeUserSettings);
+router.use(verifyJWT);
+router.route("/add-email").post(addEmailToExistingUser);
+router.route("/logout").post(logoutUser);
+router.route("/me").get(getUserInfo);
+router.route("/me").patch(changeUserSettings);
 
 export default router;

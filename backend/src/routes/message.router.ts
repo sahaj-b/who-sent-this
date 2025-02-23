@@ -3,7 +3,8 @@ import verifyJWT from "../middlewares/auth.middleware";
 import { sendMessage, getMessages } from "../controllers/message.controller";
 
 const router = Router();
-router.route("/send").post(verifyJWT, sendMessage);
-router.route("/get").get(verifyJWT, getMessages);
+router.use(verifyJWT);
+router.route("/send").post(sendMessage);
+router.route("/get").get(getMessages);
 
 export default router;
