@@ -20,7 +20,7 @@ POST {{server}}/users/register-with-email
   "email": "@test.com",
   "password": "password123"
 }
-
+ 
 ### add email to existing user
 POST {{server}}/users/add-email
 
@@ -65,9 +65,9 @@ POST {{server}}/messages/send
 
 {
   "recipientId": "U56Z6gM0", 
-  "text": "REPLYYYYYYYYYYYYYYYYYY lul",
-  "replyToMsgId": "67bb1764fff0d7bc8f66a8ab",
-  "allowReply": true
+  "text": "MESSSSSSSSSSSSSSSAAAAAAAAAAGEEEEEEEEEEEEEEEEE",
+  "replyToMsgId": "67bb48c286932c55fcc9d048",
+  "allowReply": false
 }
 
 ### get messages
