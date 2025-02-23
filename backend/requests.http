@@ -21,23 +21,30 @@ POST {{server}}/users/register-with-email
   "password": "password123"
 }
 
-### register existing with email
-POST {{server}}/users/register-existing-with-email
+### add email to existing user
+POST {{server}}/users/add-email
 
 {
   "email": "test1@test.com",
-  "password": "password123"
+  "password": "password123",
+  "name": "hi"
 }
 
 ### refresh token
 POST {{server}}/users/refresh-token
 
 ### info
-GET {{server}}/api/users/me
+GET {{server}}/users/me
 
 
 ### change settings
 PATCH {{server}}/users/me
+# {
+#   "password?": "string",
+#   "newPassword?":"string",
+#   "receivingPaused?": bool,
+#   "name?": "string"
+# }
 
 {
   "password": "password12",
@@ -47,12 +54,20 @@ PATCH {{server}}/users/me
 }
 
 ### send message
-GET {{server}}/messages/send
+
+POST {{server}}/messages/send
+# {
+#   "recipientId": "shortId string", 
+#   "text": "string",
+#   "replyToMsgId?": "ObjectID string",
+#   "allowReply?": bool
+# }
 
 {
-  "recipientId": "shortID", 
-  "message": "Hello 1234 testing",
-  "replyTo": "msgID"
+  "recipientId": "U56Z6gM0", 
+  "text": "REPLYYYYYYYYYYYYYYYYYY lul",
+  "replyToMsgId": "67bb1764fff0d7bc8f66a8ab",
+  "allowReply": true
 }
 
 ### get messages
