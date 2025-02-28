@@ -1,0 +1,9 @@
+@import url("https://fonts.googleapis.com/css2?family=Barrio&family=Knewave&family=Rubik+Dirt&family=Sigmar&display=swap&family=Funnel+Sans:ital@0;1&display=swap");
+@import "tailwindcss";
+@theme {
+  --color-text: #f1ebf8;
+  --color-background: #08040d;
+  --color-primary: #b693da;
+  --color-secondary: #822c58;
+  --color-accent: #c45160;
+}
