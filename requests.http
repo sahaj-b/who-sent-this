@@ -55,7 +55,7 @@ PATCH {{server}}/users/me
 
 ### send message
 
-POST {{server}}/messages/send
+POST {{server}}/messages
 # {
 #   "recipientId": "shortId string", 
 #   "text": "string",
@@ -71,5 +71,5 @@ POST {{server}}/messages/send
 }
 
 ### get messages
-GET {{server}}/messages/get
+GET {{server}}/messages
 
