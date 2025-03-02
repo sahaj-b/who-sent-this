@@ -9,6 +9,7 @@ import {
   logoutUser,
   refreshAccessToken,
   getUserInfo,
+  deleteUser,
 } from "../controllers/user.controller";
 
 const router = Router();
@@ -23,5 +24,6 @@ router.route("/add-email").post(addEmailToExistingUser);
 router.route("/logout").post(logoutUser);
 router.route("/me").get(getUserInfo);
 router.route("/me").patch(changeUserSettings);
+router.route("/me").delete(deleteUser);
 
 export default router;

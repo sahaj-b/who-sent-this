@@ -5,6 +5,7 @@ import rateLimit from "express-rate-limit";
 import userRouter from "./routes/user.router";
 import messageRouter from "./routes/message.router";
 import { RATE_LIMITER_MAX, RATE_LIMITER_WINDOW } from "./constants";
+import errorHandler from "./middlewares/error.middleware";
 
 const app = express();
 app.use(
@@ -25,5 +26,7 @@ app.use(express.json({ limit: "16kb" }));
 //using routers as a middleware
 app.use("/api/users", userRouter);
 app.use("/api/messages", messageRouter);
+
+app.use(errorHandler);
 
 export default app;

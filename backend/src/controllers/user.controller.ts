@@ -261,6 +261,30 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "New tokens sent successfuly", {}));
 });
 
+const deleteUser = asyncHandler(async (req, res) => {
+  const incomingPassword = req.body?.password;
+  if (!incomingPassword) {
+    throw new ApiError(400, "Password is required to delete account");
+  }
+  const user = res.locals.user;
+  if (!user) {
+    throw new ApiError(500, "Something went wrong while getting current User");
+  }
+  if (!(await user.isPasswordCorrect(incomingPassword))) {
+    throw new ApiError(401, "Incorrect Password");
+  }
+  await User.findByIdAndDelete(user._id);
+  const options: CookieOptions = {
+    httpOnly: true,
+    secure: true,
+  };
+  res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, "User deleted successfuly", {}));
+});
+
 export {
   getUserInfo,
   changeUserSettings,
@@ -270,4 +294,5 @@ export {
   loginUser,
   logoutUser,
   refreshAccessToken,
+  deleteUser,
 };
