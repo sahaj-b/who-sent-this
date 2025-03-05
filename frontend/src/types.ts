@@ -1,4 +1,4 @@
-export interface TUser {
+export type TUser = {
   _id: string;
   shortId: string;
   name?: string;
@@ -6,9 +6,9 @@ export interface TUser {
   receivingPaused: boolean;
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
-export interface TMessage {
+export type TMessage = {
   _id: string;
   text: string;
   sentBy?: string;
@@ -17,4 +17,4 @@ export interface TMessage {
   repliedToMessageId?: string;
   createdAt: Date;
   updatedAt: Date;
-}
+};
