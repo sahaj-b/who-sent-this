@@ -54,12 +54,13 @@ export default function Login() {
       <div className="px-5 pt-5">
         <Link to="/">
           <SecondaryButton
-            content={<Icon icon="mdi:arrow-back" width={30}></Icon>}
+            content={<Icon icon="mdi:arrow-back" width={25}></Icon>}
+            className="py-3 px-4"
           />
         </Link>
       </div>
-      <div className="flex justify-center">
-        <div className="ring-primary/80 shadow-primary/15 mt-32 flex max-w-xl min-w-sm flex-col space-y-8 rounded-2xl p-6 shadow-xl ring-2 md:space-y-10 md:p-10">
+      <div className="flex flex-col justify-center items-center">
+        <div className="ring-primary/80 shadow-primary/15 mt-32 flex flex-col space-y-10 rounded-2xl py-10 px-8 shadow-xl ring-2 md:w-md">
           <span className="text-primary font-[Sigmar] text-5xl opacity-90 md:text-6xl">
             Login
           </span>
@@ -73,12 +74,13 @@ export default function Login() {
             <div className="relative">
               <InputBox
                 type={showPassword ? "text" : "password"}
+                className="pr-10"
                 placeholder="Enter your Password"
                 onChange={(e) => setPassword(e.target.value)}
               />
               <Icon
                 icon={showPassword ? "mdi:eye-off" : "mdi:eye"}
-                className="absolute right-2 top-3 text-primary hover:cursor-pointer size-6 "
+                className="absolute right-2 top-2.5 text-primary hover:cursor-pointer size-6 "
                 onClick={() => setShowPassword(!showPassword)}
               />
             </div>
@@ -89,6 +91,12 @@ export default function Login() {
             )}
             <Button type="submit" content="Submit" />
           </form>
+        </div>
+        <div className="mt-10 text-text/70 text-lg">
+          Don't have an account? {"  "}
+          <Link to="/register" className="text-primary hover:underline">
+            Register
+          </Link>
         </div>
       </div>
     </div>
