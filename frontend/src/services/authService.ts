@@ -11,6 +11,7 @@ export async function ApiLogin(
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify({ email, password }),
   });
 
@@ -25,6 +26,7 @@ export async function ApiLogin(
 export async function ApiLogout() {
   const res = await fetch(`${url}/logout`, {
     method: "POST",
+    credentials: "include",
   });
 
   if (!res.ok) {
@@ -35,6 +37,7 @@ export async function ApiLogout() {
 export async function ApiRegisterAnonymous(): Promise<TUser | void> {
   const res = await fetch(`${url}/register-anonymous`, {
     method: "POST",
+    credentials: "include",
   });
 
   if (res.ok) {
@@ -55,6 +58,7 @@ export async function ApiRegisterWithEmail(
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify({ email, password, name }),
   });
 
@@ -66,13 +70,17 @@ export async function ApiRegisterWithEmail(
   }
 }
 
-export async function ApiRegisterEmail(email: string): Promise<TUser | void> {
+export async function ApiRegisterEmail(
+  email: string,
+  password: string,
+  name?: string,
+): Promise<TUser | void> {
   const res = await fetch(`${url}/add-email`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ email }),
+    body: JSON.stringify({ email, password, name }),
   });
 
   if (res.ok) {
@@ -86,13 +94,16 @@ export async function ApiRegisterEmail(email: string): Promise<TUser | void> {
 export async function ApiRefreshToken() {
   const res = await fetch(`${url}/refresh-token`, {
     method: "POST",
+    credentials: "include",
   });
 
   if (!res.ok) return await responseErrorHandler(res, "Refreshing Token");
 }
 
 export async function ApiUserInfo(): Promise<TUser | void> {
-  const res = await fetch(`${url}/me`);
+  const res = await fetch(`${url}/me`, {
+    credentials: "include",
+  });
 
   if (res.ok) {
     const body = await res.json();
@@ -127,6 +138,7 @@ export async function ApiChangeUserSettings(
 export async function ApiDeleteUser() {
   const res = await fetch(`${url}/me`, {
     method: "DELETE",
+    credentials: "include",
   });
   if (!res.ok) await responseErrorHandler(res, "Deleting user");
 }

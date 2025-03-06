@@ -18,19 +18,24 @@ import {
   ApiUserInfo,
 } from "../services/authService";
 import { errorHandler } from "../utils/errorHandler";
+import { toast } from "react-toastify";
 
 interface AuthContextType {
   user: TUser | null;
   setUser: React.Dispatch<React.SetStateAction<TUser | null>>;
   login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   registerAnonymous: () => Promise<void>;
   registerWithEmail: (
     email: string,
     password: string,
     name?: string,
   ) => Promise<void>;
-  registerEmail: (email: string) => Promise<void>;
+  registerEmail: (
+    email: string,
+    password: string,
+    name?: string,
+  ) => Promise<void>;
   refreshToken: () => Promise<void>;
   userInfo: () => Promise<TUser | null | void>;
   changeSettings: (
@@ -45,7 +50,7 @@ const initialAuthContext: AuthContextType = {
   user: null,
   setUser: () => {},
   login: async () => {},
-  logout: () => {},
+  logout: async () => {},
   registerAnonymous: async () => {},
   registerWithEmail: async () => {},
   registerEmail: async () => {},
@@ -68,6 +73,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = async () => {
     await ApiLogout().catch(errorHandler);
     setUser(null);
+    toast.success("Logged out successfully");
   };
 
   const registerAnonymous = async () => {
@@ -86,8 +92,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (data) setUser(data);
   };
 
-  const registerEmail = async (email: string) => {
-    await ApiRegisterEmail(email).catch(errorHandler);
+  const registerEmail = async (
+    email: string,
+    password: string,
+    name?: string,
+  ) => {
+    await ApiRegisterEmail(email, password, name).catch(errorHandler);
   };
 
   const refreshToken = async () => {

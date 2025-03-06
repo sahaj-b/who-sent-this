@@ -1,7 +1,7 @@
 import { TMessage } from "../types";
 import { responseErrorHandler } from "../utils/errorHandler";
 
-const url = "http://localhost:3000/api/messages";
+const url = "http://localhost:3000/api/dashboard";
 export const sendMessage = async (
   text: string,
   recipientId: string,
@@ -29,7 +29,7 @@ export const sendMessage = async (
 };
 
 export const getMessages = async (): Promise<TMessage[] | void> => {
-  const res = await fetch(`${url}/messages`, {
+  const res = await fetch(`${url}/dashboard`, {
     method: "GET",
   });
   if (res.ok) {
