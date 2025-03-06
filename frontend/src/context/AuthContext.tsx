@@ -17,7 +17,6 @@ import {
   ApiRegisterWithEmail,
   ApiUserInfo,
 } from "../services/authService";
-import { toast } from "react-toastify";
 import { errorHandler } from "../utils/errorHandler";
 
 interface AuthContextType {
@@ -42,16 +41,28 @@ interface AuthContextType {
   ) => Promise<void>;
   deleteUser: () => Promise<void>;
 }
+const initialAuthContext: AuthContextType = {
+  user: null,
+  setUser: () => {},
+  login: async () => {},
+  logout: () => {},
+  registerAnonymous: async () => {},
+  registerWithEmail: async () => {},
+  registerEmail: async () => {},
+  refreshToken: async () => {},
+  userInfo: async () => null,
+  changeSettings: async () => {},
+  deleteUser: async () => {},
+};
 
-export const AuthContext = createContext<AuthContextType | null>(null);
+export const AuthContext = createContext<AuthContextType>(initialAuthContext);
 export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<TUser | null>(null);
-  const login = async (email: string, password: string, name?: string) => {
-    const data = await ApiLogin(email, password, name).catch(errorHandler);
+  const login = async (email: string, password: string) => {
+    const data = await ApiLogin(email, password).catch(errorHandler);
 
     if (data) setUser(data);
-    else toast.error("Something went wrong");
   };
 
   const logout = async () => {
@@ -62,7 +73,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const registerAnonymous = async () => {
     const data = await ApiRegisterAnonymous().catch(errorHandler);
     if (data) setUser(data);
-    else toast.error("Something went wrong");
   };
 
   const registerWithEmail = async (
@@ -74,7 +84,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       errorHandler,
     );
     if (data) setUser(data);
-    else toast.error("Something went wrong");
   };
 
   const registerEmail = async (email: string) => {
