@@ -17,7 +17,7 @@ import {
   ApiRegisterWithEmail,
   ApiUserInfo,
 } from "../services/authService";
-import { errorHandler } from "../utils/errorHandler";
+import { toastifyError } from "../utils/errorHandler";
 import { toast } from "react-toastify";
 
 interface AuthContextType {
@@ -65,19 +65,19 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<TUser | null>(null);
   const login = async (email: string, password: string) => {
-    const data = await ApiLogin(email, password).catch(errorHandler);
+    const data = await ApiLogin(email, password).catch(toastifyError);
 
     if (data) setUser(data);
   };
 
   const logout = async () => {
-    await ApiLogout().catch(errorHandler);
+    await ApiLogout().catch(toastifyError);
     setUser(null);
     toast.success("Logged out successfully");
   };
 
   const registerAnonymous = async () => {
-    const data = await ApiRegisterAnonymous().catch(errorHandler);
+    const data = await ApiRegisterAnonymous().catch(toastifyError);
     if (data) setUser(data);
   };
 
@@ -87,7 +87,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     name?: string,
   ) => {
     const data = await ApiRegisterWithEmail(email, password, name).catch(
-      errorHandler,
+      toastifyError,
     );
     if (data) setUser(data);
   };
@@ -97,15 +97,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     password: string,
     name?: string,
   ) => {
-    await ApiRegisterEmail(email, password, name).catch(errorHandler);
+    await ApiRegisterEmail(email, password, name).catch(toastifyError);
   };
 
   const refreshToken = async () => {
-    await ApiRefreshToken().catch(errorHandler);
+    await ApiRefreshToken().catch(toastifyError);
   };
 
   const userInfo = async () => {
-    return await ApiUserInfo().catch(errorHandler);
+    return await ApiUserInfo().catch(toastifyError);
   };
 
   const changeSettings = async (
@@ -115,7 +115,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     newPassword?: string,
   ) => {
     if (!user) {
-      errorHandler("User not found");
+      toastifyError("User not found");
       return;
     }
     await ApiChangeUserSettings(
@@ -123,7 +123,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       name,
       password,
       newPassword,
-    ).catch(errorHandler);
+    ).catch(toastifyError);
     setUser({
       ...user,
       name,
@@ -132,7 +132,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const deleteUser = async () => {
-    await ApiDeleteUser().catch(errorHandler);
+    await ApiDeleteUser().catch(toastifyError);
     setUser(null);
   };
 

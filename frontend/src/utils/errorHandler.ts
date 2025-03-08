@@ -1,10 +1,12 @@
 import { toast } from "react-toastify";
 
-export function errorHandler(error: any) {
+export function toastifyError(error: any) {
   if (error instanceof Error) {
     toast.error(error.message);
+    throw error;
   } else {
     toast.error("Something went wrong");
+    throw new Error("Unknown error");
   }
 }
 
