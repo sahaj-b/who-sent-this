@@ -26,6 +26,6 @@ router.route("/logout").post(logoutUser);
 router.route("/me").get(getUserInfo);
 router.route("/me").patch(changeUserSettings);
 router.route("/me").delete(deleteUser);
-router.route("/exists").get(userExists);
+router.route("/user-exists").post(userExists);
 
 export default router;

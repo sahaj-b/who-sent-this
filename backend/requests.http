@@ -3,7 +3,7 @@
 POST {{server}}/users/login
 
 {
-  "email": "tes@tes.com",
+  "email": "test@test.com",
   "password": "testtest"
 }
 
@@ -60,8 +60,14 @@ DELETE {{server}}/users/me
   "password": "testtest"
 }
 
-### send message
+### does user exist
+POST {{server}}/users/user-exists
 
+{
+  "id": "2WNgb8wY"
+}
+
+### send message
 POST {{server}}/messages
 # {
 #   "recipientId": "shortId string", 
