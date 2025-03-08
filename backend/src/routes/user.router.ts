@@ -10,7 +10,7 @@ import {
   refreshAccessToken,
   getUserInfo,
   deleteUser,
-  userExists,
+  getUserName,
 } from "../controllers/user.controller";
 
 const router = Router();
@@ -26,6 +26,6 @@ router.route("/logout").post(logoutUser);
 router.route("/me").get(getUserInfo);
 router.route("/me").patch(changeUserSettings);
 router.route("/me").delete(deleteUser);
-router.route("/user-exists").post(userExists);
+router.route("/:shortId").get(getUserName);
 
 export default router;

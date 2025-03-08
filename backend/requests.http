@@ -60,12 +60,8 @@ DELETE {{server}}/users/me
   "password": "testtest"
 }
 
-### does user exist
-POST {{server}}/users/user-exists
-
-{
-  "id": "2WNgb8wY"
-}
+### get specific user name
+GET {{server}}/users/2WNgb8wY
 
 ### send message
 POST {{server}}/messages
