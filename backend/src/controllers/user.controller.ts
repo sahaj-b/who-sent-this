@@ -285,6 +285,16 @@ const deleteUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "User deleted successfuly", {}));
 });
 
+const userExists = asyncHandler(async (req, res) => {
+  const { id } = req.body;
+  if (!id) throw new ApiError(400, "User ID is required");
+  if (typeof id !== "string") throw new ApiError(400, "Invalid User ID");
+  if (!(await User.findOne({ shortId: id }))) {
+    throw new ApiError(404, "User doesn't exist");
+  }
+  res.status(200).json(new ApiResponse(200, "User exists", {}));
+});
+
 export {
   getUserInfo,
   changeUserSettings,
@@ -295,4 +305,5 @@ export {
   logoutUser,
   refreshAccessToken,
   deleteUser,
+  userExists,
 };
