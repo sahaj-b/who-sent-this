@@ -18,6 +18,7 @@ const limiter = rateLimit({
   windowMs: RATE_LIMITER_WINDOW,
   max: RATE_LIMITER_MAX,
 });
+
 app.use(limiter);
 app.use(cookieParser());
 app.use(express.json({ limit: "16kb" }));

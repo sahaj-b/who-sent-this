@@ -263,14 +263,14 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
 const deleteUser = asyncHandler(async (req, res) => {
   const incomingPassword = req.body?.password;
-  if (!incomingPassword) {
-    throw new ApiError(400, "Password is required to delete account");
-  }
   const user = res.locals.user;
   if (!user) {
     throw new ApiError(500, "Something went wrong while getting current User");
   }
-  if (!(await user.isPasswordCorrect(incomingPassword))) {
+  if (user.email && !incomingPassword) {
+    throw new ApiError(400, "Password is required to delete account");
+  }
+  if (user.email && !(await user.isPasswordCorrect(incomingPassword))) {
     throw new ApiError(401, "Incorrect Password");
   }
   await User.findByIdAndDelete(user._id);
@@ -285,14 +285,15 @@ const deleteUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "User deleted successfuly", {}));
 });
 
-const userExists = asyncHandler(async (req, res) => {
-  const { id } = req.body;
+const getUserName = asyncHandler(async (req, res) => {
+  const id = req.params.shortId;
   if (!id) throw new ApiError(400, "User ID is required");
   if (typeof id !== "string") throw new ApiError(400, "Invalid User ID");
-  if (!(await User.findOne({ shortId: id }))) {
+  const user = await User.findOne({ shortId: id }).select("name -_id");
+  if (!user) {
     throw new ApiError(404, "User doesn't exist");
   }
-  res.status(200).json(new ApiResponse(200, "User exists", {}));
+  res.status(200).json(new ApiResponse(200, "Username sent", user));
 });
 
 export {
@@ -305,5 +306,5 @@ export {
   logoutUser,
   refreshAccessToken,
   deleteUser,
-  userExists,
+  getUserName,
 };

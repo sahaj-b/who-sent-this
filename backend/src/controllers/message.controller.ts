@@ -51,7 +51,7 @@ const sendMessage = asyncHandler(async (req, res) => {
       );
     }
     if (!replyToMessage.allowReply) {
-      throw new ApiError(400, "This message doesn't allow replies");
+      throw new ApiError(400, "The message doesn't allow replies");
     }
   }
   await Message.create({
