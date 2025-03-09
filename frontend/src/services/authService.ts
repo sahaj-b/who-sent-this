@@ -1,6 +1,6 @@
 import { TUser } from "../types";
 const url = "http://localhost:3000/api/users";
-import { responseErrorHandler } from "../utils/errorHandler";
+import { throwFormattedError } from "../utils/errorHandler";
 
 export async function ApiLogin(
   email: string,
@@ -19,7 +19,7 @@ export async function ApiLogin(
     const body = await res.json();
     return body.data;
   } else {
-    return await responseErrorHandler(res, "Login");
+    return await throwFormattedError(res, "Login");
   }
 }
 
@@ -30,7 +30,7 @@ export async function ApiLogout() {
   });
 
   if (!res.ok) {
-    await responseErrorHandler(res, "Logout");
+    await throwFormattedError(res, "Logout");
   }
 }
 
@@ -44,7 +44,7 @@ export async function ApiRegisterAnonymous(): Promise<TUser | void> {
     const body = await res.json();
     return body.data;
   } else {
-    return await responseErrorHandler(res, "Anonymous register");
+    return await throwFormattedError(res, "Anonymous register");
   }
 }
 
@@ -66,7 +66,7 @@ export async function ApiRegisterWithEmail(
     const body = await res.json();
     return body.data;
   } else {
-    return await responseErrorHandler(res, "Register");
+    return await throwFormattedError(res, "Register");
   }
 }
 
@@ -80,6 +80,7 @@ export async function ApiRegisterEmail(
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify({ email, password, name }),
   });
 
@@ -87,7 +88,7 @@ export async function ApiRegisterEmail(
     const body = await res.json();
     return body.data;
   } else {
-    return await responseErrorHandler(res, "Registering email");
+    return await throwFormattedError(res, "Registering email");
   }
 }
 
@@ -97,7 +98,7 @@ export async function ApiRefreshToken() {
     credentials: "include",
   });
 
-  if (!res.ok) return await responseErrorHandler(res, "Refreshing Token");
+  if (!res.ok) return await throwFormattedError(res, "Refreshing Token");
 }
 
 export async function ApiUserInfo(): Promise<TUser | void> {
@@ -109,7 +110,7 @@ export async function ApiUserInfo(): Promise<TUser | void> {
     const body = await res.json();
     return body.data;
   } else {
-    return await responseErrorHandler(res, "Getting user settings");
+    return await throwFormattedError(res, "Getting user settings");
   }
 }
 
@@ -120,10 +121,11 @@ export async function ApiChangeUserSettings(
   newPassword?: string,
 ): Promise<TUser | void> {
   const res = await fetch(`${url}/me`, {
-    method: "PUT",
+    method: "PATCH",
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify({ receivingPaused, name, password, newPassword }),
   });
 
@@ -131,14 +133,18 @@ export async function ApiChangeUserSettings(
     const body = await res.json();
     return body.data;
   } else {
-    return await responseErrorHandler(res, "Updating user settings");
+    return await throwFormattedError(res, "Updating user settings");
   }
 }
 
-export async function ApiDeleteUser() {
+export async function ApiDeleteUser(password?: string) {
   const res = await fetch(`${url}/me`, {
     method: "DELETE",
     credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ password }),
   });
-  if (!res.ok) await responseErrorHandler(res, "Deleting user");
+  if (!res.ok) await throwFormattedError(res, "Deleting user");
 }

@@ -15,12 +15,14 @@ export function InputBox({
   onChange = () => {},
   ringColorClass = "focus:ring-primary/80",
   className = "",
+  value,
 }: {
   placeholder?: string;
   type?: HTMLInputTypeAttribute;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   ringColorClass?: string;
   className?: string;
+  value?: string;
 }) {
   return (
     <input
@@ -34,6 +36,7 @@ export function InputBox({
       }
       placeholder={placeholder}
       onChange={onChange}
+      value={value}
     />
   );
 }
@@ -69,8 +72,12 @@ export function EmailInputBox({
 
 export function PasswordInputBox({
   setPassword,
+  placeholder = "Enter your Password",
+  value,
 }: {
   setPassword: (e: SetStateAction<string>) => void;
+  placeholder?: string;
+  value?: string;
 }) {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -79,8 +86,9 @@ export function PasswordInputBox({
       <InputBox
         type={showPassword ? "text" : "password"}
         className="pr-10"
-        placeholder="Enter your Password"
+        placeholder={placeholder}
         onChange={(e) => setPassword(e.target.value)}
+        value={value}
       />
       <Icon
         icon={showPassword ? "mdi:eye-off" : "mdi:eye"}
@@ -93,8 +101,10 @@ export function PasswordInputBox({
 
 export function NameInputBox({
   setName,
+  value,
 }: {
   setName: (e: SetStateAction<string>) => void;
+  value?: string;
 }) {
   return (
     <div className="relative">
@@ -103,10 +113,22 @@ export function NameInputBox({
         className="pr-10"
         placeholder="Name (Optional)"
         onChange={(e) => setName(e.target.value)}
+        value={value}
       />
       <div className="text-primary absolute top-2.5 right-2 size-6">
         <Info content="Users will see this name while sending messages to you" />
       </div>
     </div>
+  );
+}
+
+export function MessageInputBox({ ref }: { ref: any }) {
+  return (
+    <textarea
+      aria-label="Message"
+      className="bg-secondary/30 text-text focus:ring-primary/80 w-full resize-none rounded-md px-5 py-2 text-lg transition outline-none focus:ring-2"
+      placeholder="Enter your message"
+      ref={ref}
+    />
   );
 }

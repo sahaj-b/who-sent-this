@@ -1,7 +1,6 @@
 import { Link, useNavigate } from "react-router";
-import { Button, SecondaryButton } from "../components/Buttons";
+import { Button } from "../components/Buttons";
 import { useAuth } from "../context/AuthContext";
-import { Icon } from "@iconify/react";
 import {
   EmailInputBox,
   NameInputBox,
@@ -10,6 +9,8 @@ import {
 import { useEffect, useState } from "react";
 import { isEmailInvalid, isPasswordInvalid } from "../utils/validators";
 import { toast } from "react-toastify";
+import Header from "../components/Header";
+import Box from "../components/Box";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ export default function Register() {
   useEffect(() => {
     if (user?.email) {
       toast.info("You are already logged in");
-      navigate("/dashboard");
+      navigate(-1);
     }
   }, [user]);
 
@@ -26,33 +27,32 @@ export default function Register() {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [buttonLoading, setButtonLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    console.log(name, email, password);
     const message = isEmailInvalid(email) || isPasswordInvalid(password);
     setError(message);
     if (message) return;
-    if (user) {
-      await auth.registerEmail(email, password, name?.trim());
-    } else {
-      await auth.registerWithEmail(email, password, name?.trim());
+    setButtonLoading(true);
+    try {
+      if (!user) {
+        await auth.registerWithEmail(email, password, name?.trim());
+      } else {
+        await auth.registerEmail(email, password, name?.trim());
+      }
+      if (user) navigate("/inbox");
+    } catch (e: any) {
+      setError(e.message);
     }
-    if (user) navigate("/dashboard");
+    setButtonLoading(false);
   }
 
   return (
-    <div className="bg-background h-screen">
-      <div className="px-5 pt-5">
-        <Link to="/">
-          <SecondaryButton
-            content={<Icon icon="mdi:arrow-back" width={25}></Icon>}
-            className="px-4 py-3"
-          />
-        </Link>
-      </div>
-      <div className="flex flex-col items-center justify-center">
-        <div className="ring-primary/80 shadow-primary/15 mt-32 flex min-w-sm flex-col space-y-10 rounded-2xl px-8 py-10 shadow-xl ring-2 md:w-md">
+    <>
+      <Header />
+      <div className="mx-3 flex flex-col items-center justify-center">
+        <Box>
           <span className="text-primary font-[Sigmar] text-5xl opacity-90 md:text-6xl">
             Register
           </span>
@@ -65,9 +65,9 @@ export default function Register() {
                 {error}
               </span>
             )}
-            <Button type="submit" content="Submit" />
+            <Button type="submit" content="Submit" loading={buttonLoading} />
           </form>
-        </div>
+        </Box>
         <div className="text-text/70 mt-10 text-lg">
           Already have an account? {"  "}
           <Link to="/login" className="text-primary hover:underline">
@@ -75,6 +75,6 @@ export default function Register() {
           </Link>
         </div>
       </div>
-    </div>
+    </>
   );
 }

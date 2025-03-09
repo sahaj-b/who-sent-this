@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 
-export function toastifyError(error: any) {
+export function toastifyAndThrowError(error: any) {
   if (error instanceof Error) {
     toast.error(error.message);
     throw error;
@@ -10,10 +10,11 @@ export function toastifyError(error: any) {
   }
 }
 
-export async function responseErrorHandler(res: Response, action: string) {
-  const errorData = await res
-    .json()
-    .catch(() => ({ message: "Unknown error" }));
+export async function throwFormattedError(res: Response, action: string) {
+  const errorData = await res.json().catch(() => ({
+    message:
+      "Server Error: " + res.status + " " + res.statusText || "Unknown error",
+  }));
   console.error(errorData);
   throw new Error(
     errorData.message ?? `${action} failed with status: ${res.status}`,
