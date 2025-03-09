@@ -39,22 +39,28 @@ export function SecondaryButton({
   className = "",
   type = "button",
   onClick = () => {},
+  loading = false,
 }: {
   content: string | JSX.Element;
   className?: string;
   type?: "button" | "submit" | "reset";
   onClick?: () => void;
+  loading?: boolean;
 }) {
   return (
     <button
       type={type}
       onClick={onClick}
       className={
-        "inset-ring-primary text-text bg-secondary/60 rounded-xl px-3 py-1 text-xl inset-ring-1 transition duration-300 hover:cursor-pointer hover:inset-ring-2 " +
+        "w-full inset-ring-primary text-text bg-secondary/60 rounded-xl py-3 px-5 text-xl inset-ring-1 transition duration-300 hover:cursor-pointer hover:inset-ring-2 " +
         className
       }
     >
-      {content}
+      {loading ? (
+        <Icon icon="svg-spinners:3-dots-move" className="m-auto size-7" />
+      ) : (
+        content
+      )}
     </button>
   );
 }
