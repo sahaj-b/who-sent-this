@@ -107,7 +107,7 @@ export function NameInputBox({
   value?: string;
 }) {
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <InputBox
         type="text"
         className="pr-10"

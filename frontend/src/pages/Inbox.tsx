@@ -17,8 +17,10 @@ export default function Inbox() {
         .then(() => {
           setLoading(false);
         })
+        // .catch(() => toast.error("Something went wrong"));
         .catch(toastifyAndThrowError);
     }
+    console.log(user);
   }, []);
   if (loading) return <Loading />;
   return (
@@ -27,8 +29,8 @@ export default function Inbox() {
       {user?.email || (
         <div className="mx-3 text-center text-text/70 mt-10 text-lg">
           <Link to="/register" className="text-primary hover:underline">
-            Register{" "}
-          </Link>
+            Register
+          </Link>{" "}
           to access messages from any device or browser
         </div>
       )}

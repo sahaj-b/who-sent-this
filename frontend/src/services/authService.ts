@@ -2,6 +2,13 @@ import { TUser } from "../types";
 const url = "http://localhost:3000/api/users";
 import { throwFormattedError } from "../utils/errorHandler";
 
+export type Settings = {
+  receivingPaused?: boolean;
+  name?: string;
+  password?: string;
+  newPassword?: string;
+};
+
 export async function ApiLogin(
   email: string,
   password: string,
@@ -115,10 +122,7 @@ export async function ApiUserInfo(): Promise<TUser | void> {
 }
 
 export async function ApiChangeUserSettings(
-  receivingPaused?: boolean,
-  name?: string,
-  password?: string,
-  newPassword?: string,
+  settings: Settings,
 ): Promise<TUser | void> {
   const res = await fetch(`${url}/me`, {
     method: "PATCH",
@@ -126,7 +130,7 @@ export async function ApiChangeUserSettings(
       "Content-Type": "application/json",
     },
     credentials: "include",
-    body: JSON.stringify({ receivingPaused, name, password, newPassword }),
+    body: JSON.stringify(settings),
   });
 
   if (res.ok) {

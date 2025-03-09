@@ -45,7 +45,7 @@ function DeleteComponent({ auth }: { auth: AuthContextType }) {
         className={
           deleteClicked
             ? "w-sm bg-background shadow-accent/30 ring-accent absolute z-10 flex flex-col space-y-5 rounded-xl p-5 shadow-xl ring-2 backdrop-blur-sm"
-            : "mt-10"
+            : "my-10"
         }
       >
         <div className={!deleteClicked ? "hidden" : ""}>
@@ -97,10 +97,18 @@ export default function Settings() {
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
-    let message = "";
-    if (newPassword) message = isPasswordInvalid(newPassword);
-    setError(message);
-    if (message) return;
+    let errMsg = "";
+    if (newPassword) errMsg = isPasswordInvalid(newPassword);
+    console.log(name, user?.name, receivingPaused, user?.receivingPaused);
+    if (
+      !newPassword &&
+      name === (user?.name ?? "") &&
+      receivingPaused === user?.receivingPaused
+    ) {
+      errMsg = "No changes made";
+    }
+    setError(errMsg);
+    if (errMsg) return;
     setButtonLoading(true);
     try {
       await auth.changeSettings({
@@ -124,7 +132,12 @@ export default function Settings() {
             Settings
           </span>
           <form onSubmit={handleSave} className="flex flex-col space-y-5">
-            <NameInputBox setName={setName} value={name} />
+            <div className="flex items-center w-full">
+              <span className="text-text/80 relative -right-0.5 p-2 text-lg font-bold bg-secondary/80 rounded-y-md rounded-l-md ">
+                Name:{" "}
+              </span>
+              <NameInputBox setName={setName} value={name} />
+            </div>
             <Toggle
               bool={receivingPaused}
               setBool={setReceivingPaused}
@@ -146,12 +159,8 @@ export default function Settings() {
                 />
               </div>
             )}
-            <div className="mt-5">
-              {error && (
-                <p className="pb-3 text-accent text-md pl-2 font-bold">
-                  {error}
-                </p>
-              )}
+            <div className="mt-3">
+              <p className="pb-3 text-accent text-md pl-2 font-bold">{error}</p>
               <Button type="submit" content="Save" loading={buttonLoading} />
             </div>
           </form>

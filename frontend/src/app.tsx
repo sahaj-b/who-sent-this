@@ -7,11 +7,11 @@ import Settings from "./pages/Settings";
 import Send from "./pages/Send";
 import { ToastContainer } from "react-toastify";
 import Inbox from "./pages/Inbox";
-import Private from "./components/ProtectedRoute";
+import Private from "./components/Private";
 
 export default function App() {
   return (
-    <div className="font-[Funnel_Sans] bg-background h-screen">
+    <div className="font-[Funnel_Sans] bg-background min-h-screen">
       <AuthProvider>
         <BrowserRouter>
           <Routes>

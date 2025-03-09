@@ -16,16 +16,10 @@ import {
   ApiRegisterEmail,
   ApiRegisterWithEmail,
   ApiUserInfo,
+  Settings,
 } from "../services/authService";
 import { toastifyAndThrowError } from "../utils/errorHandler";
 import { toast } from "react-toastify";
-
-type settings = {
-  receivingPaused?: boolean;
-  name?: string;
-  password?: string;
-  newPassword?: string;
-};
 
 export type AuthContextType = {
   user: TUser | null;
@@ -45,7 +39,7 @@ export type AuthContextType = {
   ) => Promise<void>;
   refreshToken: () => Promise<void>;
   userInfo: () => Promise<TUser | null | void>;
-  changeSettings: (settings: settings) => Promise<void>;
+  changeSettings: (settings: Settings) => Promise<void>;
   deleteUser: (password?: string) => Promise<void>;
 };
 const initialAuthContext: AuthContextType = {
@@ -110,25 +104,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const userInfo = async () => {
-    return await ApiUserInfo();
+    const data = await ApiUserInfo();
+    if (data) setUser(data);
+    else toast.error("Invernal Server Error");
   };
 
-  const changeSettings = async ({
-    receivingPaused,
-    name,
-    password,
-    newPassword,
-  }: settings) => {
+  const changeSettings = async (settings: Settings) => {
     if (!user) {
       toastifyAndThrowError("User not found");
       return;
     }
-    await ApiChangeUserSettings(receivingPaused, name, password, newPassword);
-    setUser({
-      ...user,
-      name,
-      receivingPaused: receivingPaused ?? user.receivingPaused,
-    });
+    const data = await ApiChangeUserSettings(settings);
+    if (data) setUser(data);
+    else toast.error("Invernal Server Error");
   };
 
   const deleteUser = async (password?: string) => {

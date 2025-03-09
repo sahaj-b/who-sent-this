@@ -32,6 +32,7 @@ export default function Login() {
     setButtonLoading(true);
     try {
       await auth.login(email, password);
+      toast.success("Logged in successfully");
       if (user) navigate("/inbox");
     } catch (e: any) {
       setError(e.message);

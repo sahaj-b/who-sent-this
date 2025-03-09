@@ -54,7 +54,7 @@ export default function ProfileButton() {
     <div className="relative" ref={dropdownRef}>
       <Icon
         icon="mdi:account"
-        className="text-primary shadow-accent/20 bg-secondary/60 size-12 rounded-full p-2 -mt-1 shadow-md cursor-pointer"
+        className="inset-ring-2 inset-ring-accent/20 text-primary bg-secondary/60 size-12 rounded-full p-2 -mt-1 cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       />
       <div
