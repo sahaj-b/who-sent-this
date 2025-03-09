@@ -18,16 +18,15 @@ function DeleteComponent({ auth }: { auth: AuthContextType }) {
   const [error, setError] = useState("");
   const user = auth.user;
   async function handleDelete() {
-    setPassword("");
     setDeleteLoading(true);
     try {
       await auth.deleteUser(password);
       toast.success("Account deleted successfully");
+      navigate("/");
     } catch (e: any) {
       setError(e.message);
     }
     setDeleteLoading(false);
-    navigate("/");
   }
   return (
     <>
@@ -45,7 +44,7 @@ function DeleteComponent({ auth }: { auth: AuthContextType }) {
       <div
         className={
           deleteClicked
-            ? "bg-background shadow-accent/30 ring-accent absolute z-10 flex flex-col space-y-5 rounded-xl p-5 shadow-xl ring-2 backdrop-blur-sm"
+            ? "w-sm bg-background shadow-accent/30 ring-accent absolute z-10 flex flex-col space-y-5 rounded-xl p-5 shadow-xl ring-2 backdrop-blur-sm"
             : "mt-10"
         }
       >
@@ -77,7 +76,7 @@ function DeleteComponent({ auth }: { auth: AuthContextType }) {
           {deleteLoading ? (
             <Icon icon="svg-spinners:3-dots-move" className="size-7" />
           ) : (
-            <>Delete your {user?.email || "Anonymous "} Account</>
+            <>Delete your {!user?.email ? "Anonymous " : ""} Account</>
           )}
         </button>
       </div>

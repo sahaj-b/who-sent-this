@@ -2,6 +2,7 @@ import { useAuth } from "../context/AuthContext";
 import { ReactNode, useEffect } from "react";
 import getCookieValue from "../utils/getCookie";
 import Loading from "../pages/Loading";
+import { toastifyAndThrowError } from "../utils/errorHandler";
 
 export default function Private({ component }: { component: ReactNode }) {
   const auth = useAuth();
@@ -11,10 +12,14 @@ export default function Private({ component }: { component: ReactNode }) {
         auth
           .userInfo()
           .catch(() =>
-            auth.refreshToken().catch(() => auth.registerAnonymous()),
+            auth
+              .refreshToken()
+              .catch(() =>
+                auth.registerAnonymous().catch(toastifyAndThrowError),
+              ),
           );
-      } else auth.registerAnonymous();
+      } else auth.registerAnonymous().catch(toastifyAndThrowError);
     }
   }, []);
-  return auth.user ? component : <Loading />;
+  return auth.user?._id ? component : <Loading />;
 }

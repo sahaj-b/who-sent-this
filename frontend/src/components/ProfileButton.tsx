@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { useState, useRef, useEffect } from "react";
 
 function Element({
   text,
@@ -25,39 +26,84 @@ function Element({
 }
 
 export default function ProfileButton() {
-  const auth = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
+  const auth = useAuth();
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    }
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
+
   return (
-    <div className="group relative">
+    <div className="relative" ref={dropdownRef}>
       <Icon
         icon="mdi:account"
-        className="text-primary shadow-accent/20 bg-secondary/60 size-12 rounded-full p-2 -mt-1 shadow-md"
+        className="text-primary shadow-accent/20 bg-secondary/60 size-12 rounded-full p-2 -mt-1 shadow-md cursor-pointer"
+        onClick={() => setIsOpen(!isOpen)}
       />
       <div
-        className="ring-primary bg-secondary/50 shadow-background absolute right-1/2 z-10 mt-1 translate-x-1/2 -translate-y-1/2 scale-0 flex-col overflow-hidden rounded-xl shadow-md ring-1 backdrop-blur-sm transition
-        group-hover:translate-x-1/4 group-hover:translate-y-0 group-hover:scale-100 hover:translate-x-1/4 hover:translate-y-0 hover:scale-100"
+        className={`ring-primary bg-secondary/50 shadow-background absolute right-1/2 z-10 mt-1 translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-xl shadow-md ring-1 backdrop-blur-sm transition
+        ${isOpen ? "translate-x-1/4 translate-y-0 scale-100" : "scale-0"}`}
       >
         <Element
           text="Inbox"
           icon="mdi:inbox-arrow-down"
-          onClick={() => navigate("/inbox")}
+          onClick={() => {
+            navigate("/inbox");
+            setIsOpen(false);
+          }}
         />
         <Element
           text="Settings"
           icon="mdi:settings"
-          onClick={() => navigate("/settings")}
+          onClick={() => {
+            navigate("/settings");
+            setIsOpen(false);
+          }}
         />
-        {auth.user?.email || (
+        {user?.email ? (
+          <Element
+            text="Logout"
+            icon="mdi:logout"
+            onClick={() => {
+              auth.logout();
+              navigate("/");
+              setIsOpen(false);
+            }}
+          />
+        ) : (
           <>
             <Element
               text="Login"
-              icon="mdi:login-variant"
-              onClick={() => navigate("/login")}
+              icon="mdi:login"
+              onClick={() => {
+                navigate("/login");
+                setIsOpen(false);
+              }}
             />
             <Element
               text="Register"
               icon="mdi:register"
-              onClick={() => navigate("/register")}
+              onClick={() => {
+                navigate("/register");
+                setIsOpen(false);
+              }}
             />
           </>
         )}

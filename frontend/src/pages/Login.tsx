@@ -17,7 +17,7 @@ export default function Login() {
       toast.info("You are already logged in");
       navigate(-1);
     }
-  }, [user]);
+  }, []);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

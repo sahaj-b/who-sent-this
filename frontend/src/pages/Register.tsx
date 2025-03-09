@@ -8,7 +8,6 @@ import {
 } from "../components/InputBoxes";
 import { useEffect, useState } from "react";
 import { isEmailInvalid, isPasswordInvalid } from "../utils/validators";
-import { toast } from "react-toastify";
 import Header from "../components/Header";
 import Box from "../components/Box";
 
@@ -17,9 +16,9 @@ export default function Register() {
   const auth = useAuth();
   const user = auth.user;
   useEffect(() => {
+    console.log(user);
     if (user?.email) {
-      toast.info("You are already logged in");
-      navigate(-1);
+      navigate("/inbox");
     }
   }, [user]);
 

@@ -67,20 +67,22 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<TUser | null>(null);
   const login = async (email: string, password: string) => {
-    const data = await ApiLogin(email, password).catch(toastifyAndThrowError);
+    const data = await ApiLogin(email, password);
 
     if (data) setUser(data);
+    else toast.error("Invernal Server Error");
   };
 
   const logout = async () => {
-    await ApiLogout().catch(toastifyAndThrowError);
+    await ApiLogout();
     setUser(null);
     toast.success("Logged out successfully");
   };
 
   const registerAnonymous = async () => {
-    const data = await ApiRegisterAnonymous().catch(toastifyAndThrowError);
+    const data = await ApiRegisterAnonymous();
     if (data) setUser(data);
+    else toast.error("Invernal Server Error");
   };
 
   const registerWithEmail = async (
@@ -88,10 +90,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     password: string,
     name?: string,
   ) => {
-    const data = await ApiRegisterWithEmail(email, password, name).catch(
-      toastifyAndThrowError,
-    );
+    const data = await ApiRegisterWithEmail(email, password, name);
     if (data) setUser(data);
+    else toast.error("Invernal Server Error");
   };
 
   const registerEmail = async (
@@ -99,18 +100,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     password: string,
     name?: string,
   ) => {
-    const data = await ApiRegisterEmail(email, password, name).catch(
-      toastifyAndThrowError,
-    );
+    const data = await ApiRegisterEmail(email, password, name);
     if (data) setUser(data);
+    else toast.error("Invernal Server Error");
   };
 
   const refreshToken = async () => {
-    await ApiRefreshToken().catch(toastifyAndThrowError);
+    await ApiRefreshToken();
   };
 
   const userInfo = async () => {
-    return await ApiUserInfo().catch(toastifyAndThrowError);
+    return await ApiUserInfo();
   };
 
   const changeSettings = async ({
@@ -123,12 +123,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       toastifyAndThrowError("User not found");
       return;
     }
-    await ApiChangeUserSettings(
-      receivingPaused,
-      name,
-      password,
-      newPassword,
-    ).catch(toastifyAndThrowError);
+    await ApiChangeUserSettings(receivingPaused, name, password, newPassword);
     setUser({
       ...user,
       name,
@@ -137,7 +132,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const deleteUser = async (password?: string) => {
-    await ApiDeleteUser(password).catch(toastifyAndThrowError);
+    await ApiDeleteUser(password);
     setUser(null);
   };
 
