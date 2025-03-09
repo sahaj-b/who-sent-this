@@ -2,9 +2,9 @@ import { Router } from "express";
 import verifyJWT from "../middlewares/auth.middleware";
 import {
   addEmailToExistingUser,
-  registerUserWithEmailAndLogin,
+  registerWithEmailAndLogin,
   changeUserSettings,
-  registerUserAnonymouslyAndLogin,
+  registerAnonymouslyAndLogin,
   loginUser,
   logoutUser,
   refreshAccessToken,
@@ -14,8 +14,8 @@ import {
 } from "../controllers/user.controller";
 
 const router = Router();
-router.route("/register-anonymous").post(registerUserAnonymouslyAndLogin);
-router.route("/register-with-email").post(registerUserWithEmailAndLogin);
+router.route("/register-anonymous").post(registerAnonymouslyAndLogin);
+router.route("/register-with-email").post(registerWithEmailAndLogin);
 router.route("/login").post(loginUser);
 router.route("/refresh-token").post(refreshAccessToken);
 

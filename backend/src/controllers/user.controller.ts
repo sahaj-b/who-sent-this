@@ -152,13 +152,13 @@ const addEmailToExistingUser = asyncHandler(async (req, res) => {
     );
 });
 
-const registerUserAnonymouslyAndLogin = asyncHandler(async (req, res) => {
+const registerAnonymouslyAndLogin = asyncHandler(async (req, res) => {
   let { name } = req.body;
   name = name?.trim();
 
   const user = await User.create({
     name: name || undefined,
-    receivingPaused: false,
+    receivingPaused: true,
   });
   user.refreshToken = user.generateRefreshToken();
   await user.save();
@@ -186,7 +186,7 @@ const registerUserAnonymouslyAndLogin = asyncHandler(async (req, res) => {
     );
 });
 
-const registerUserWithEmailAndLogin = asyncHandler(async (req, res) => {
+const registerWithEmailAndLogin = asyncHandler(async (req, res) => {
   let { email, password, name } = req.body;
   email = email?.trim();
   name = name?.trim();
@@ -300,8 +300,8 @@ export {
   getUserInfo,
   changeUserSettings,
   addEmailToExistingUser,
-  registerUserWithEmailAndLogin,
-  registerUserAnonymouslyAndLogin,
+  registerWithEmailAndLogin,
+  registerAnonymouslyAndLogin,
   loginUser,
   logoutUser,
   refreshAccessToken,
