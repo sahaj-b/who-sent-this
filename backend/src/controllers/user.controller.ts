@@ -77,7 +77,7 @@ const getUserInfo = asyncHandler(async (_, res) => {
 const changeUserSettings = asyncHandler(async (req, res) => {
   let { name, receivingPaused, password, newPassword } = req.body;
   name = name?.trim();
-  if (![name, receivingPaused, newPassword].some((i) => i)) {
+  if ([name, receivingPaused, newPassword].every((i) => i === undefined)) {
     throw new ApiError(400, "No settings provided to update");
   }
   if (newPassword && !password) {
@@ -87,18 +87,17 @@ const changeUserSettings = asyncHandler(async (req, res) => {
     throw new ApiError(400, "New password can't be same as old password");
   }
   const user = res.locals.user;
-
   if (!user) {
     throw new ApiError(500, "Something went wrong while getting current User");
   }
   if (name && name !== user.name) {
     user.name = name;
   }
-  if (receivingPaused && typeof receivingPaused !== "boolean") {
+  if (typeof receivingPaused !== "boolean") {
     throw new ApiError(400, "Invalid receivingPaused field provided");
-  }
-  if (receivingPaused && receivingPaused !== user.receivingPaused) {
-    user.receivingPaused = receivingPaused;
+  } else {
+    if (receivingPaused !== user.receivingPaused)
+      user.receivingPaused = receivingPaused;
   }
   if (password) {
     if (!(await user.isPasswordCorrect(password))) {
