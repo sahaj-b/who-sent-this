@@ -43,7 +43,7 @@ export default function Home() {
         Send and receive anonymous messages without revealing your identity
       </p>
       <div className="mt-10 flex justify-center">
-        {auth.user?.email || !auth.user?.receivingPaused ? (
+        {auth.user && (auth.user?.email || !auth.user?.receivingPaused) ? (
           <Button
             content={
               (auth.user?.receivingPaused ?? true)

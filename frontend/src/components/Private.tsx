@@ -8,12 +8,8 @@ export default function Private({ component }: { component: ReactNode }) {
   useEffect(() => {
     if (!auth.user) {
       auth
-        .userInfo()
-        .catch(() =>
-          auth
-            .refreshToken()
-            .catch(() => auth.registerAnonymous().catch(toastifyAndThrowError)),
-        );
+        .refreshToken()
+        .catch(() => auth.registerAnonymous().catch(toastifyAndThrowError));
     }
   }, []);
   return auth.user ? component : <Loading />;

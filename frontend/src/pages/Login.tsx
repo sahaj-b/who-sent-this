@@ -15,7 +15,7 @@ export default function Login() {
   useEffect(() => {
     if (user?.email) {
       toast.info("You are already logged in");
-      navigate(-1);
+      navigate("/");
     }
   }, []);
 
@@ -43,7 +43,7 @@ export default function Login() {
   return (
     <>
       <Header />
-      <div className="mx-3 flex flex-col items-center justify-center">
+      <div className="mx-3 mt-32 flex flex-col items-center justify-center">
         <Box>
           <span className="text-primary font-[Sigmar] text-5xl opacity-90 md:text-6xl">
             Login

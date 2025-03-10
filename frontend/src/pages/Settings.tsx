@@ -126,7 +126,7 @@ export default function Settings() {
   return (
     <>
       <Header />
-      <div className="mx-3 flex flex-col items-center justify-center">
+      <div className="mx-3 mt-20 flex flex-col items-center justify-center">
         <Box>
           <span className="text-primary font-[Sigmar] text-5xl opacity-90 md:text-6xl">
             Settings
@@ -136,7 +136,11 @@ export default function Settings() {
               <span className="text-text/80 relative -right-0.5 p-2 text-lg font-bold bg-secondary/80 rounded-y-md rounded-l-md ">
                 Name:{" "}
               </span>
-              <NameInputBox setName={setName} value={name} />
+              <NameInputBox
+                setName={setName}
+                value={name}
+                placeholder="(Optional)"
+              />
             </div>
             <Toggle
               bool={receivingPaused}

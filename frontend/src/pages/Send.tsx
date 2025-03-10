@@ -2,7 +2,7 @@ import { Button } from "../components/Buttons";
 import GlowDrop from "../components/GlowDrop";
 import { useParams } from "react-router";
 import Header from "../components/Header";
-import { getUserName, sendMessage } from "../services/messageService";
+import { ApiGetUserName, ApiSendMessage } from "../services/messageService";
 import { useEffect, useRef, useState } from "react";
 import InvalidUser from "./InvalidUser";
 import Loading from "./Loading";
@@ -22,7 +22,7 @@ export default function Home() {
   const { id } = useParams();
   useEffect(() => {
     id
-      ? getUserName(id)
+      ? ApiGetUserName(id)
           .then((name) => {
             setUserName(name);
             setLoading(false);
@@ -40,7 +40,7 @@ export default function Home() {
       toast.error("Message is too long");
     } else {
       setButtonLoading(true);
-      sendMessage(message, id!, allowReply)
+      ApiSendMessage(message, id!, allowReply)
         .then(() => {
           toast.success("Message sent");
           setButtonLoading(false);
@@ -65,7 +65,7 @@ export default function Home() {
     <>
       <GlowDrop />
       <Header />
-      <div className="px-3">
+      <div className="px-3 mt-20">
         <form>
           <Box>
             <span className="font-[Sigmar] text-4xl md:text-5xl text-primary/80 rounded-2xl ">

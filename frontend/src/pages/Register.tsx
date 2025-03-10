@@ -50,7 +50,7 @@ export default function Register() {
   return (
     <>
       <Header />
-      <div className="mx-3 flex flex-col items-center justify-center">
+      <div className="mx-3 mt-32 flex flex-col items-center justify-center">
         <Box>
           <span className="text-primary font-[Sigmar] text-5xl opacity-90 md:text-6xl">
             Register

@@ -2,7 +2,7 @@ import { TMessage } from "../types";
 import { throwFormattedError } from "../utils/errorHandler";
 
 const url = "http://localhost:3000/api";
-export const getUserName = async (id: string) => {
+export const ApiGetUserName = async (id: string) => {
   const res = await fetch(`${url}/users/${id}`, {
     credentials: "include",
   });
@@ -15,7 +15,7 @@ export const getUserName = async (id: string) => {
   }
 };
 
-export const sendMessage = async (
+export const ApiSendMessage = async (
   text: string,
   recipientId: string,
   allowReply: boolean,
@@ -42,7 +42,7 @@ export const sendMessage = async (
   }
 };
 
-export const getMessages = async (): Promise<TMessage[] | void> => {
+export const ApiGetMessages = async (): Promise<TMessage[] | void> => {
   const res = await fetch(`${url}/messages`, {
     method: "GET",
     credentials: "include",
@@ -51,5 +51,19 @@ export const getMessages = async (): Promise<TMessage[] | void> => {
     return await res.json().then((body) => body.data);
   } else {
     return await throwFormattedError(res, "Get messages");
+  }
+};
+
+export const ApiDeleteMessage = async (id: string): Promise<void> => {
+  const res = await fetch(`${url}/messages`, {
+    method: "DELETE",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ id }),
+  });
+  if (!res.ok) {
+    await throwFormattedError(res, "Deleting message");
   }
 };

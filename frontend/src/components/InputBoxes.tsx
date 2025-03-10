@@ -6,7 +6,7 @@ import {
   useState,
 } from "react";
 import { isEmailInvalid } from "../utils/validators";
-import { Icon } from "@iconify/react/dist/iconify.js";
+import { Icon, loadIcons } from "@iconify/react/dist/iconify.js";
 import Info from "./Info";
 
 export function InputBox({
@@ -79,6 +79,10 @@ export function PasswordInputBox({
   placeholder?: string;
   value?: string;
 }) {
+  useEffect(() => {
+    loadIcons(["mdi:eye-off"]);
+  }, []);
+
   const [showPassword, setShowPassword] = useState(false);
 
   return (
@@ -102,16 +106,18 @@ export function PasswordInputBox({
 export function NameInputBox({
   setName,
   value,
+  placeholder = "Name (Optional)",
 }: {
   setName: (e: SetStateAction<string>) => void;
   value?: string;
+  placeholder?: string;
 }) {
   return (
     <div className="relative w-full">
       <InputBox
         type="text"
         className="pr-10"
-        placeholder="Name (Optional)"
+        placeholder={placeholder}
         onChange={(e) => setName(e.target.value)}
         value={value}
       />
