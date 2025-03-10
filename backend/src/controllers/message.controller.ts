@@ -77,4 +77,29 @@ const getMessages = asyncHandler(async (_, res) => {
     .json(new ApiResponse(200, "Messages fetched successfully", messageList));
 });
 
-export { sendMessage, getMessages };
+const deleteMessage = asyncHandler(async (req, res) => {
+  const { id } = req.body;
+  if (!id) {
+    throw new ApiError(400, "No message ID provided");
+  }
+  const user = res.locals.user;
+  if (!user) {
+    throw new ApiError(400, "Error while getting current user");
+  }
+  if (!Types.ObjectId.isValid(id)) {
+    throw new ApiError(400, "Invalid message ID provided");
+  }
+  const message = await Message.findById(id);
+  if (!message) {
+    throw new ApiError(400, "Invalid message ID provided");
+  }
+  if (message?.receivedBy !== user.shortId) {
+    throw new ApiError(401, "You are not the recipient of this message");
+  }
+  await Message.findByIdAndDelete(id);
+  res
+    .status(200)
+    .json(new ApiResponse(200, "Message deleted successfully", {}));
+});
+
+export { sendMessage, getMessages, deleteMessage };
