@@ -15,7 +15,6 @@ export async function throwFormattedError(res: Response, action: string) {
     message:
       "Server Error: " + res.status + " " + res.statusText || "Unknown error",
   }));
-  console.error(errorData);
   throw new Error(
     errorData.message ?? `${action} failed with status: ${res.status}`,
   );

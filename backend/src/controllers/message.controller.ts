@@ -5,6 +5,7 @@ import asyncHandler from "../utils/asyncHandler";
 import { MAX_MESSAGE_CHARACTERS } from "../constants";
 import ApiResponse from "../utils/ApiResponse";
 import { Types } from "mongoose";
+import messageCooldown from "../middlewares/cooldown.middleware";
 
 export const postQuestion = asyncHandler(async (req, res) => {
   const user = res.locals.user;
@@ -23,7 +24,7 @@ export const postQuestion = asyncHandler(async (req, res) => {
     );
   }
   await Message.create({
-    sentBy: user._id,
+    sentBy: user.shortId,
     allowReply: true,
     text: question,
   });
@@ -60,7 +61,7 @@ export const sendMessage = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Invalid Recipient ID");
   }
   await Message.create({
-    sentBy: user._id,
+    sentBy: user.shortId,
     receivedBy: recipientId,
     allowReply: allowReply,
     text: text,
@@ -101,8 +102,12 @@ export const replyToMessage = asyncHandler(async (req, res) => {
   if (message.receivedBy && message.receivedBy !== user.shortId) {
     throw new ApiError(401, "You are not the recipient of this message");
   }
+  if (message.allowReply === false) {
+    throw new ApiError(400, "This message does not allow replies");
+  }
+
   await Message.create({
-    sentBy: user._id,
+    sentBy: user.shortId,
     receivedBy: message.sentBy,
     repliedToMessageId: replyToMsgId,
     allowReply: allowReply,
@@ -116,9 +121,9 @@ export const getMessages = asyncHandler(async (_, res) => {
   if (!user) {
     throw new ApiError(400, "Error while getting current user");
   }
-  const messageList = await Message.find({ receivedBy: user.shortId }).select(
-    "-sentBy",
-  );
+  const messageList = await Message.find({ receivedBy: user.shortId })
+    .select("-sentBy")
+    .sort({ createdAt: -1 });
   res
     .status(200)
     .json(new ApiResponse(200, "Messages fetched successfully", messageList));
@@ -161,14 +166,40 @@ export const getMessageById = asyncHandler(async (req, res) => {
   if (!Types.ObjectId.isValid(id)) {
     throw new ApiError(404, "Invalid message ID provided");
   }
-  const message = await Message.findById(id).select("-sentBy");
+  const message = await Message.findById(id);
   if (!message) {
     throw new ApiError(404, "Invalid message ID provided");
   }
-  if (message.receivedBy && message.receivedBy !== user.shortId) {
+  if (
+    message.receivedBy &&
+    message.sentBy !== user.shortId &&
+    message.receivedBy !== user.shortId
+  ) {
     throw new ApiError(401, "You are not the recipient of this message");
+  }
+  const { sentBy, ...messageResponse } = message.toObject();
+  res
+    .status(200)
+    .json(
+      new ApiResponse(200, "Message fetched successfully", messageResponse),
+    );
+});
+
+export const getQuestions = asyncHandler(async (_, res) => {
+  const user = res.locals.user;
+  if (!user) {
+    throw new ApiError(400, "Error while getting current user");
+  }
+  const questions = await Message.find({
+    sentBy: user.shortId,
+    receivedBy: null,
+  })
+    .select("-sentBy")
+    .sort({ createdAt: -1 });
+  if (questions == undefined) {
+    throw new ApiError(404, "Error while getting questions");
   }
   res
     .status(200)
-    .json(new ApiResponse(200, "Message fetched successfully", message));
+    .json(new ApiResponse(200, "Questions fetched successfully", questions));
 });

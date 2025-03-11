@@ -61,10 +61,10 @@ DELETE {{server}}/users/me
 }
 
 ### get user name by id
-GET {{server}}/users/2WNgb8wY
+GET {{server}}/users/J7b2WRMD
 
 ### get message by id
-GET {{server}}/messages/67cc79011918a6e6b2d7a908
+GET {{server}}/messages/67d0580ebf874f319d1d8bab
 
 ### send message
 POST {{server}}/messages
@@ -76,10 +76,9 @@ POST {{server}}/messages
 # }
 
 {
-  "recipientId": "U56Z6gM0", 
-  "text": "MESSSSSSSSSSSSSSSAAAAAAAAAAGEEEEEEEEEEEEEEEEE",
-  "replyToMsgId": "67bb48c286932c55fcc9d048",
-  "allowReply": false
+  "recipientId": "J7b2WRMD", 
+  "text": "YOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO",
+  "allowReply": true
 }
 
 ### reply to message
@@ -95,8 +94,11 @@ POST {{server}}/messages/reply/
 GET {{server}}/messages
 
 ### post question
-POST {{server}}/messages/question
+POST {{server}}/messages/questions
 
 {
   "text": "QUESTION LOL"
 }
+
+### get question
+GET {{server}}/messages/questions

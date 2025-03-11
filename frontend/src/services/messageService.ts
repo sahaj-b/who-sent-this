@@ -104,3 +104,32 @@ export const ApiDeleteMessage = async (id: string) => {
     await throwFormattedError(res, "Deleting message");
   }
 };
+
+export const ApiPostQuestion = async (text: string) => {
+  const res = await fetch(`${url}/questions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify({ text }),
+  });
+
+  if (res.ok) {
+    return await res.json().then((body) => body.data);
+  } else {
+    return await throwFormattedError(res, "Posting question");
+  }
+};
+
+export const ApiGetQuestions = async () => {
+  const res = await fetch(`${url}/questions`, {
+    method: "GET",
+    credentials: "include",
+  });
+  if (res.ok) {
+    return await res.json().then((body) => body.data);
+  } else {
+    return await throwFormattedError(res, "Getting questions");
+  }
+};
