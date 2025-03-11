@@ -14,6 +14,7 @@ export default function Home() {
 
   async function handleClick() {
     setButtonLoading(true);
+    window.localStorage.setItem("accountOrReceiver", "true");
     if (!auth.user) {
       await auth.registerAnonymous().catch((e) => {
         setButtonLoading(false);
@@ -43,7 +44,9 @@ export default function Home() {
         Send and receive anonymous messages without revealing your identity
       </p>
       <div className="mt-10 flex justify-center">
-        {auth.user && (auth.user?.email || !auth.user?.receivingPaused) ? (
+        {auth.user &&
+        (auth.user?.email ||
+          window.localStorage.getItem("accountOrReceiver") === "true") ? (
           <Button
             content={
               (auth.user?.receivingPaused ?? true)

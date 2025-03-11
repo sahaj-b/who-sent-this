@@ -69,13 +69,22 @@ POST {{server}}/messages
 #   "recipientId": "shortId string", 
 #   "text": "string",
 #   "replyToMsgId?": "ObjectID string",
-#   "allowReply?": bool
+#   "allowReply": bool
 # }
 
 {
   "recipientId": "U56Z6gM0", 
   "text": "MESSSSSSSSSSSSSSSAAAAAAAAAAGEEEEEEEEEEEEEEEEE",
   "replyToMsgId": "67bb48c286932c55fcc9d048",
+  "allowReply": false
+}
+
+### reply to message
+POST {{server}}/messages/reply/
+
+{
+  "text": "REPLY",
+  "replyToMsgId": "67cc79011918a6e6b2d7a908",
   "allowReply": false
 }
 

@@ -20,6 +20,7 @@ import {
 } from "../services/authService";
 import { toastifyAndThrowError } from "../utils/errorHandler";
 import { toast } from "react-toastify";
+import Loading from "../pages/Loading";
 
 export type AuthContextType = {
   user: TUser | null;
@@ -60,6 +61,7 @@ export const AuthContext = createContext<AuthContextType>(initialAuthContext);
 export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<TUser | null>(null);
+  const [loading, setLoading] = useState(true);
   const login = async (email: string, password: string) => {
     const data = await ApiLogin(email, password);
 
@@ -101,6 +103,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const refreshToken = async () => {
     await ApiRefreshToken();
+    await userInfo();
   };
 
   const userInfo = async () => {
@@ -126,9 +129,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     ApiUserInfo()
-      .then((data) => setUser(data ?? null))
-      .catch();
+      .then((data) => {
+        setUser(data ?? null);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
   }, []);
+  if (loading) return <Loading />;
   return (
     <AuthContext.Provider
       value={{

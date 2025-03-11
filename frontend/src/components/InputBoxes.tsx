@@ -6,8 +6,8 @@ import {
   useState,
 } from "react";
 import { isEmailInvalid } from "../utils/validators";
-import { Icon, loadIcons } from "@iconify/react/dist/iconify.js";
 import Info from "./Info";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 export function InputBox({
   placeholder = "",
@@ -79,10 +79,6 @@ export function PasswordInputBox({
   placeholder?: string;
   value?: string;
 }) {
-  useEffect(() => {
-    loadIcons(["mdi:eye-off"]);
-  }, []);
-
   const [showPassword, setShowPassword] = useState(false);
 
   return (
@@ -128,12 +124,18 @@ export function NameInputBox({
   );
 }
 
-export function MessageInputBox({ ref }: { ref: any }) {
+export function MessageInputBox({
+  ref,
+  placeholder = "Enter your message",
+}: {
+  ref: any;
+  placeholder?: string;
+}) {
   return (
     <textarea
       aria-label="Message"
       className="bg-secondary/30 text-text focus:ring-primary/80 w-full resize-none rounded-md px-5 py-2 text-lg transition outline-none focus:ring-2"
-      placeholder="Enter your message"
+      placeholder={placeholder}
       ref={ref}
     />
   );

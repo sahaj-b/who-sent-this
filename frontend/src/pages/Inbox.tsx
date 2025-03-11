@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import Header from "../components/Header";
-import { Icon, loadIcons } from "@iconify/react/dist/iconify.js";
+import { Icon } from "@iconify/react/dist/iconify.js";
 import { useEffect, useState } from "react";
 import { Tooltip } from "../components/Info";
 import Box from "../components/Box";
@@ -11,7 +11,6 @@ import { ApiDeleteMessage, ApiGetMessages } from "../services/messageService";
 import { Button, SecondaryButton } from "../components/Buttons";
 import { toast } from "react-toastify";
 
-loadIcons(["tabler:copy-check"]);
 function URL({ url }: { url: string }) {
   const [copied, setCopied] = useState(false);
 
@@ -190,8 +189,8 @@ function InboxBox() {
         setLoading(false);
       })
       .catch((e) => {
-        toastifyAndThrowError(e);
         setLoading(false);
+        toastifyAndThrowError(e);
       });
   }
 
@@ -257,14 +256,6 @@ function InboxBox() {
 
 export default function Inbox() {
   const { user } = useAuth();
-
-  useEffect(() => {
-    loadIcons([
-      "tabler:copy-check",
-      "svg-spinners:3-dots-move",
-      "svg-spinners:90-ring-with-bg",
-    ]);
-  }, []);
   return (
     <>
       <Header />

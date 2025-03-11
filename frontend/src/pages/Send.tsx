@@ -4,7 +4,6 @@ import { useParams } from "react-router";
 import Header from "../components/Header";
 import { ApiGetUserName, ApiSendMessage } from "../services/messageService";
 import { useEffect, useRef, useState } from "react";
-import InvalidUser from "./InvalidUser";
 import Loading from "./Loading";
 import { toastifyAndThrowError } from "../utils/errorHandler";
 import { MessageInputBox } from "../components/InputBoxes";
@@ -13,8 +12,21 @@ import Toggle from "../components/Toggle";
 import { toast } from "react-toastify";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
-export default function Home() {
-  const [userName, setUserName] = useState(false);
+function InvalidUser({ id }: { id: string | undefined }) {
+  return (
+    <>
+      <Header />
+      <br />
+      <div className="mx-5 flex justify-center items-center">
+        <span className="py-3 px-4 rounded-2xl bg-accent/20 text-center mt-10 text-accent text-4xl opacity-90 md:text-5xl">
+          User with ID: <span className="text-primary">{id}</span> not found
+        </span>
+      </div>
+    </>
+  );
+}
+export default function Send() {
+  const [userName, setUserName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [allowReply, setAllowReply] = useState(true);
   const [buttonLoading, setButtonLoading] = useState(false);
@@ -24,14 +36,14 @@ export default function Home() {
     id
       ? ApiGetUserName(id)
           .then((name) => {
-            setUserName(name);
+            setUserName(name!);
             setLoading(false);
           })
           .catch(toastifyAndThrowError)
       : setLoading(false);
   }, []);
 
-  async function handleSendClick(e: React.FormEvent) {
+  async function handleSend(e: React.FormEvent) {
     e.preventDefault();
     const message = inputRef.current?.value;
     if (!message) {
@@ -47,8 +59,8 @@ export default function Home() {
           inputRef.current!.value = "";
         })
         .catch((err) => {
-          toastifyAndThrowError(err);
           setButtonLoading(false);
+          toastifyAndThrowError(err);
         });
     }
   }
@@ -65,10 +77,10 @@ export default function Home() {
     <>
       <GlowDrop />
       <Header />
-      <div className="px-3 mt-20">
+      <div className="w-screen px-3 mt-20">
         <form>
-          <Box>
-            <span className="font-[Sigmar] text-4xl md:text-5xl text-primary/80 rounded-2xl ">
+          <Box widthClass="w-[95%] max-w-2xl">
+            <span className="font-[Sigmar] text-4xl md:text-5xl text-primary/80">
               Send to:{" "}
               <span className="text-accent/90">
                 {userName ? userName : "Anonymous"}
@@ -92,7 +104,7 @@ export default function Home() {
               }
               className="-mt-3"
               type="submit"
-              onClick={handleSendClick}
+              onClick={handleSend}
               loading={buttonLoading}
             />
           </Box>
