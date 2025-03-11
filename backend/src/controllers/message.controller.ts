@@ -6,7 +6,7 @@ import { MAX_MESSAGE_CHARACTERS } from "../constants";
 import ApiResponse from "../utils/ApiResponse";
 import { Types } from "mongoose";
 
-const sendMessage = asyncHandler(async (req, res) => {
+export const sendMessage = asyncHandler(async (req, res) => {
   const user = res.locals.user;
   if (!user) {
     throw new ApiError(400, "Error while getting current user");
@@ -64,7 +64,7 @@ const sendMessage = asyncHandler(async (req, res) => {
 
   res.status(200).json(new ApiResponse(200, "Message sent Successfully", {}));
 });
-const getMessages = asyncHandler(async (_, res) => {
+export const getMessages = asyncHandler(async (_, res) => {
   const user = res.locals.user;
   if (!user) {
     throw new ApiError(400, "Error while getting current user");
@@ -76,8 +76,7 @@ const getMessages = asyncHandler(async (_, res) => {
     .status(200)
     .json(new ApiResponse(200, "Messages fetched successfully", messageList));
 });
-
-const deleteMessage = asyncHandler(async (req, res) => {
+export const deleteMessage = asyncHandler(async (req, res) => {
   const { id } = req.body;
   if (!id) {
     throw new ApiError(400, "No message ID provided");
@@ -101,5 +100,3 @@ const deleteMessage = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, "Message deleted successfully", {}));
 });
-
-export { sendMessage, getMessages, deleteMessage };

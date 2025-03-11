@@ -5,7 +5,7 @@ import ApiResponse from "../utils/ApiResponse";
 import { CookieOptions } from "express";
 import jwt from "jsonwebtoken";
 
-const loginUser = asyncHandler(async (req, res) => {
+export const loginUser = asyncHandler(async (req, res) => {
   let { email, password } = req.body;
   if (!email) {
     throw new ApiError(401, "Email is required");
@@ -48,7 +48,7 @@ const loginUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "User Logged in succesfully", userToReturn));
 });
 
-const logoutUser = asyncHandler(async (_, res) => {
+export const logoutUser = asyncHandler(async (_, res) => {
   const user = res.locals.user;
   if (!user) {
     throw new ApiError(500, "Something went wrong while getting current User");
@@ -66,7 +66,7 @@ const logoutUser = asyncHandler(async (_, res) => {
     .json(new ApiResponse(200, "User Logged out Succesfully", {}));
 });
 
-const getUserInfo = asyncHandler(async (_, res) => {
+export const getUserInfo = asyncHandler(async (_, res) => {
   const { passwordHash, refreshToken, ...userToReturn } =
     res.locals.user.toObject();
   res
@@ -74,7 +74,7 @@ const getUserInfo = asyncHandler(async (_, res) => {
     .json(new ApiResponse(200, "Sent User info successfuly", userToReturn));
 });
 
-const changeUserSettings = asyncHandler(async (req, res) => {
+export const changeUserSettings = asyncHandler(async (req, res) => {
   let { name, receivingPaused, password, newPassword } = req.body;
   name = name?.trim();
   if ([name, receivingPaused, newPassword].every((i) => i === undefined)) {
@@ -117,7 +117,7 @@ const changeUserSettings = asyncHandler(async (req, res) => {
     );
 });
 
-const addEmailToExistingUser = asyncHandler(async (req, res) => {
+export const addEmailToExistingUser = asyncHandler(async (req, res) => {
   let { email, password } = req.body;
   email = email.trim();
   if (!email) {
@@ -151,7 +151,7 @@ const addEmailToExistingUser = asyncHandler(async (req, res) => {
     );
 });
 
-const registerAnonymouslyAndLogin = asyncHandler(async (req, res) => {
+export const registerAnonymouslyAndLogin = asyncHandler(async (req, res) => {
   let { name } = req.body;
   name = name?.trim();
 
@@ -185,7 +185,7 @@ const registerAnonymouslyAndLogin = asyncHandler(async (req, res) => {
     );
 });
 
-const registerWithEmailAndLogin = asyncHandler(async (req, res) => {
+export const registerWithEmailAndLogin = asyncHandler(async (req, res) => {
   let { email, password, name } = req.body;
   email = email?.trim();
   name = name?.trim();
@@ -227,7 +227,7 @@ const registerWithEmailAndLogin = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "User registered succesfully", createdUser));
 });
 
-const refreshAccessToken = asyncHandler(async (req, res) => {
+export const refreshAccessToken = asyncHandler(async (req, res) => {
   const incomingRefreshToken = req.cookies?.refreshToken;
   if (!incomingRefreshToken) {
     throw new ApiError(401, "No Refresh Token found");
@@ -260,7 +260,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "New tokens sent successfuly", {}));
 });
 
-const deleteUser = asyncHandler(async (req, res) => {
+export const deleteUser = asyncHandler(async (req, res) => {
   const incomingPassword = req.body?.password;
   const user = res.locals.user;
   if (!user) {
@@ -284,7 +284,7 @@ const deleteUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "User deleted successfuly", {}));
 });
 
-const getUserName = asyncHandler(async (req, res) => {
+export const getUserName = asyncHandler(async (req, res) => {
   const id = req.params.shortId;
   if (!id) throw new ApiError(400, "User ID is required");
   if (typeof id !== "string") throw new ApiError(400, "Invalid User ID");
@@ -294,16 +294,3 @@ const getUserName = asyncHandler(async (req, res) => {
   }
   res.status(200).json(new ApiResponse(200, "Username sent", user));
 });
-
-export {
-  getUserInfo,
-  changeUserSettings,
-  addEmailToExistingUser,
-  registerWithEmailAndLogin,
-  registerAnonymouslyAndLogin,
-  loginUser,
-  logoutUser,
-  refreshAccessToken,
-  deleteUser,
-  getUserName,
-};
