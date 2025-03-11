@@ -284,7 +284,7 @@ export const deleteUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "User deleted successfuly", {}));
 });
 
-export const getUserName = asyncHandler(async (req, res) => {
+export const getUserNameById = asyncHandler(async (req, res) => {
   const id = req.params.shortId;
   if (!id) throw new ApiError(400, "User ID is required");
   if (typeof id !== "string") throw new ApiError(400, "Invalid User ID");

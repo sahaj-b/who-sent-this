@@ -60,7 +60,7 @@ DELETE {{server}}/users/me
   "password": "testtest"
 }
 
-### get specific user name
+### get user name by id
 GET {{server}}/users/2WNgb8wY
 
 ### send message
