@@ -63,6 +63,9 @@ DELETE {{server}}/users/me
 ### get user name by id
 GET {{server}}/users/2WNgb8wY
 
+### get message by id
+GET {{server}}/messages/67cc79011918a6e6b2d7a908
+
 ### send message
 POST {{server}}/messages
 # {
@@ -90,3 +93,10 @@ POST {{server}}/messages/reply/
 
 ### get messages
 GET {{server}}/messages
+
+### post question
+POST {{server}}/messages/question
+
+{
+  "text": "QUESTION LOL"
+}

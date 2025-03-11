@@ -6,6 +6,33 @@ import { MAX_MESSAGE_CHARACTERS } from "../constants";
 import ApiResponse from "../utils/ApiResponse";
 import { Types } from "mongoose";
 
+export const postQuestion = asyncHandler(async (req, res) => {
+  const user = res.locals.user;
+  if (!user) {
+    throw new ApiError(400, "Error while getting current user");
+  }
+  let { text: question } = req.body;
+  question = question?.trim();
+  if (!question || typeof question !== "string") {
+    throw new ApiError(400, "Invalid Question Text");
+  }
+  if (question.length > MAX_MESSAGE_CHARACTERS) {
+    throw new ApiError(
+      400,
+      `Question exceeds max character limit (${MAX_MESSAGE_CHARACTERS})`,
+    );
+  }
+  await Message.create({
+    sentBy: user._id,
+    allowReply: true,
+    text: question,
+  });
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, "Question posted successfully", {}));
+});
+
 export const sendMessage = asyncHandler(async (req, res) => {
   const user = res.locals.user;
   if (!user) {
@@ -71,7 +98,7 @@ export const replyToMessage = asyncHandler(async (req, res) => {
   if (!message) {
     throw new ApiError(400, "Invalid Message ID");
   }
-  if (message.receivedBy !== user.shortId) {
+  if (message.receivedBy && message.receivedBy !== user.shortId) {
     throw new ApiError(401, "You are not the recipient of this message");
   }
   await Message.create({
@@ -96,6 +123,7 @@ export const getMessages = asyncHandler(async (_, res) => {
     .status(200)
     .json(new ApiResponse(200, "Messages fetched successfully", messageList));
 });
+
 export const deleteMessage = asyncHandler(async (req, res) => {
   const { id } = req.body;
   if (!id) {
@@ -133,7 +161,7 @@ export const getMessageById = asyncHandler(async (req, res) => {
   if (!Types.ObjectId.isValid(id)) {
     throw new ApiError(404, "Invalid message ID provided");
   }
-  const message = await Message.findById(id);
+  const message = await Message.findById(id).select("-sentBy");
   if (!message) {
     throw new ApiError(404, "Invalid message ID provided");
   }

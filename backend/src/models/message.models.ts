@@ -13,7 +13,6 @@ const messageSchema = new mongoose.Schema(
     },
     receivedBy: {
       type: String,
-      required: true,
       index: true,
     },
     allowReply: {
