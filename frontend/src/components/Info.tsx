@@ -28,11 +28,8 @@ export function Tooltip({
 
 export default function Info({ content }: { content: string }) {
   return (
-    <div className="group">
-      <Icon
-        icon="mdi:question-mark-circle"
-        className="text-primary relative size-6"
-      />
+    <div className="group relative">
+      <Icon icon="mdi:question-mark-circle" className="text-primary size-6" />
       <Tooltip content={content} widthClass="w-[11em]" />
     </div>
   );

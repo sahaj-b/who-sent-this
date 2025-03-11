@@ -6,19 +6,25 @@ export function Button({
   className = "",
   type = "button",
   loading = false,
+  disabled = false,
   onClick = () => {},
 }: {
   content: string | JSX.Element;
   className?: string;
   type?: "button" | "submit" | "reset";
   loading?: boolean;
+  disabled?: boolean;
   onClick?: (e?: any) => void;
 }) {
   return (
     <button
       type={type}
       className={
-        "from-primary/80 via-primary to-primary/60 bg-accent/80 text-background md:hover:bg-accent/80 ring-accent/80 ring-offset-background shadow-primary/20 w-full cursor-pointer rounded-xl bg-linear-60 px-5 shadow-2xl md:ring-offset-0 ring-offset-2 py-2 text-xl font-semibold ring-2 transition duration-300 md:hover:ring-offset-2 " +
+        (disabled
+          ? "text-text/90 cursor-not-allowed bg-gray-500/30 ring-offset-2"
+          : "from-primary/80 via-primary to-primary/60 bg-accent/80 text-background md:hover:bg-accent/80 cursor-pointer bg-linear-60 transition duration-300 md:ring-offset-0 md:hover:ring-offset-2") +
+        " ring-accent/80 ring-offset-background shadow-primary/20 w-full rounded-xl px-5 py-2 text-xl font-semibold shadow-2xl ring-2 ring-offset-2" +
+        " " +
         className +
         " " +
         (loading ? "pointer-events-none opacity-70" : "")
@@ -52,7 +58,7 @@ export function SecondaryButton({
       type={type}
       onClick={onClick}
       className={
-        "w-full inset-ring-primary text-text bg-secondary/60 rounded-xl py-3 px-5 text-xl inset-ring-1 transition duration-300 hover:cursor-pointer hover:inset-ring-2 " +
+        "inset-ring-primary text-text bg-secondary/60 w-full rounded-xl px-5 py-3 text-xl inset-ring-1 transition duration-300 hover:cursor-pointer hover:inset-ring-2 " +
         className
       }
     >

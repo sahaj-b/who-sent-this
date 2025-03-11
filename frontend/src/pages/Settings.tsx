@@ -91,36 +91,38 @@ export default function Settings() {
   const [newPassword, setNewPassword] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState(user!.name ?? "");
-  const [error, setError] = useState("");
+  const [response, setResponse] = useState("");
   const [receivingPaused, setReceivingPaused] = useState(user!.receivingPaused);
   const [buttonLoading, setButtonLoading] = useState(false);
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
-    let errMsg = "";
-    if (newPassword) errMsg = isPasswordInvalid(newPassword);
-    console.log(name, user?.name, receivingPaused, user?.receivingPaused);
+    let responseMsg = "";
+    if (newPassword) responseMsg = isPasswordInvalid(newPassword);
     if (
       !newPassword &&
       name === (user?.name ?? "") &&
       receivingPaused === user?.receivingPaused
     ) {
-      errMsg = "No changes made";
+      responseMsg = "No changes made";
     }
-    setError(errMsg);
-    if (errMsg) return;
+    if (responseMsg) {
+      setResponse(responseMsg);
+      return;
+    }
     setButtonLoading(true);
     try {
       await auth.changeSettings({
-        password: password && password,
-        newPassword: newPassword && newPassword,
+        password,
+        newPassword,
         name,
         receivingPaused,
       });
-      toast.success("Settings saved");
+      responseMsg = "Saved";
     } catch (e: any) {
-      setError(e.message);
+      responseMsg = e.message;
     }
+    setResponse(responseMsg);
     setButtonLoading(false);
   }
   return (
@@ -163,8 +165,15 @@ export default function Settings() {
                 />
               </div>
             )}
-            <div className="mt-3">
-              <p className="pb-3 text-accent text-md pl-2 font-bold">{error}</p>
+            <div className="mt-2">
+              <div
+                className={
+                  "text-lg pl-2 pb-2 font-bold " +
+                  (response === "Saved" ? "text-green-300/80" : "text-accent")
+                }
+              >
+                {response}
+              </div>
               <Button type="submit" content="Save" loading={buttonLoading} />
             </div>
           </form>

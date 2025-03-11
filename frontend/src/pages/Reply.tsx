@@ -1,7 +1,11 @@
 import { Button } from "../components/Buttons";
+import GlowDrop from "../components/GlowDrop";
 import { useParams } from "react-router";
 import Header from "../components/Header";
-import { ApiGetUserName, ApiSendMessage } from "../services/messageService";
+import {
+  ApiGetMessageById,
+  ApiReplyToMessage,
+} from "../services/messageService";
 import { useEffect, useRef, useState } from "react";
 import Loading from "./Loading";
 import { toastifyAndThrowError } from "../utils/errorHandler";
@@ -10,32 +14,47 @@ import Box from "../components/Box";
 import Toggle from "../components/Toggle";
 import { toast } from "react-toastify";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { TMessage } from "../types";
 
-function InvalidUser({ id }: { id: string | undefined }) {
+function InvalidMessage() {
   return (
     <>
       <Header />
       <br />
       <div className="mx-5 flex justify-center items-center">
-        <span className="py-3 px-4 rounded-2xl bg-accent/20 text-center mt-10 text-accent text-4xl opacity-90 md:text-5xl">
-          User with ID: <span className="text-primary">{id}</span> not found
+        <span className="py-3 px-5 rounded-2xl bg-accent/20 text-center mt-10 text-accent text-4xl opacity-90 md:text-5xl">
+          Message/Question Not Found
         </span>
       </div>
     </>
   );
 }
-export default function Send() {
-  const [userName, setUserName] = useState<string | null>(null);
+function ReplyNotAllowed({ text }: { text: string }) {
+  return (
+    <>
+      <Header />
+      <br />
+      <Box widthClass="w-[95%] max-w-2xl mt-20">
+        <span className="text-2xl text-text/90">{text}</span>
+        <span className="py-3 text-center px-5 rounded-2xl bg-accent/20 text-accent text-2xl opacity-90 md:text-3xl">
+          This message doesn't allow replies
+        </span>
+      </Box>
+    </>
+  );
+}
+export default function Reply() {
+  const [message, setMessage] = useState<TMessage | null>(null);
   const [loading, setLoading] = useState(true);
   const [allowReply, setAllowReply] = useState(true);
   const [buttonLoading, setButtonLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const { id } = useParams();
+  const { id: msgId } = useParams();
   useEffect(() => {
-    id
-      ? ApiGetUserName(id)
-          .then((name) => {
-            setUserName(name ?? "");
+    msgId
+      ? ApiGetMessageById(msgId)
+          .then((msg) => {
+            setMessage(msg!);
             setLoading(false);
           })
           .catch(toastifyAndThrowError)
@@ -44,16 +63,16 @@ export default function Send() {
 
   async function handleSend(e: React.FormEvent) {
     e.preventDefault();
-    const message = inputRef.current?.value;
-    if (!message) {
+    const replyText = inputRef.current?.value;
+    if (!replyText) {
       toast.error("Message cannot be empty");
-    } else if (message.length > 600) {
+    } else if (replyText.length > 600) {
       toast.error("Message is too long");
     } else {
       setButtonLoading(true);
-      ApiSendMessage(message, id!, allowReply)
+      ApiReplyToMessage(replyText, allowReply, message!._id)
         .then(() => {
-          toast.success("Message sent");
+          toast.success("Reply sent");
           setButtonLoading(false);
           inputRef.current!.value = "";
         })
@@ -68,24 +87,27 @@ export default function Send() {
     return <Loading />;
   }
 
-  if (typeof userName !== "string") {
-    return <InvalidUser id={id} />;
+  if (!message) {
+    return <InvalidMessage />;
+  }
+
+  if (!message.allowReply) {
+    return <ReplyNotAllowed text={message.text} />;
   }
 
   return (
     <>
+      <GlowDrop />
       <Header />
-      <div className="w-screen px-3 mt-20">
+      <div className="px-3 mt-20">
         <form>
           <Box widthClass="w-[95%] max-w-2xl">
             <span className="font-[Sigmar] text-4xl md:text-5xl text-primary/80">
-              Send to:{" "}
-              <span className="text-accent/90">
-                {userName ? userName : "Anonymous"}
-              </span>
+              Reply to:
             </span>
+            <p className="text-text text-xl break-words">{message.text}</p>
             <div>
-              <MessageInputBox ref={inputRef} />
+              <MessageInputBox placeholder="Enter your reply" ref={inputRef} />
               <Toggle
                 bool={allowReply}
                 setBool={setAllowReply}

@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router";
 import { Button, SecondaryButton } from "../components/Buttons";
 import { useAuth } from "../context/AuthContext";
-import GlowDrop from "../components/GlowDrop";
 import WhoSentThis from "../components/WST";
 import ProfileButton from "../components/ProfileButton";
 import { useState } from "react";
@@ -21,21 +20,21 @@ export default function Home() {
         toastifyAndThrowError(e);
       });
     }
-    if (!auth.user?.receivingPaused) {
+    if (auth.user) {
+      if (!auth.user?.receivingPaused) {
+        navigate("/inbox");
+      } else {
+        await auth.changeSettings({ receivingPaused: false }).catch((e) => {
+          setButtonLoading(false);
+          toastifyAndThrowError(e);
+        });
+      }
       navigate("/inbox");
-      setButtonLoading(false);
-      return;
     }
-    await auth.changeSettings({ receivingPaused: false }).catch((e) => {
-      setButtonLoading(false);
-      toastifyAndThrowError(e);
-    });
     setButtonLoading(false);
-    navigate("/inbox");
   }
   return (
     <>
-      <GlowDrop />
       <div className="flex justify-end px-3 pt-4 pb-3">
         <ProfileButton />
       </div>

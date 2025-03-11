@@ -16,7 +16,6 @@ export default function Register() {
   const auth = useAuth();
   const user = auth.user;
   useEffect(() => {
-    console.log(user);
     if (user?.email) {
       navigate("/inbox");
     }
