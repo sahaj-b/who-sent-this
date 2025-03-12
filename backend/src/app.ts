@@ -8,6 +8,9 @@ import { RATE_LIMITER_MAX, RATE_LIMITER_WINDOW } from "./constants";
 import errorHandler from "./middlewares/error.middleware";
 
 const app = express();
+
+app.set('trust proxy', 1);
+
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN,
