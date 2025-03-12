@@ -39,6 +39,8 @@ export const loginUser = asyncHandler(async (req, res) => {
   const options: CookieOptions = {
     httpOnly: true,
     secure: true,
+    sameSite: "none",
+    partitioned: true,
   };
 
   return res
@@ -58,6 +60,8 @@ export const logoutUser = asyncHandler(async (_, res) => {
   const options: CookieOptions = {
     httpOnly: true,
     secure: true,
+    sameSite: "none",
+    partitioned: true,
   };
   res
     .status(200)
@@ -170,6 +174,8 @@ export const registerAnonymouslyAndLogin = asyncHandler(async (req, res) => {
   const options: CookieOptions = {
     httpOnly: true,
     secure: true,
+    sameSite: "none",
+    partitioned: true,
   };
 
   return res
@@ -218,6 +224,8 @@ export const registerWithEmailAndLogin = asyncHandler(async (req, res) => {
   const options: CookieOptions = {
     httpOnly: true,
     secure: true,
+    sameSite: "none",
+    partitioned: true,
   };
 
   return res
@@ -251,6 +259,8 @@ export const refreshAccessToken = asyncHandler(async (req, res) => {
   const options: CookieOptions = {
     httpOnly: true,
     secure: true,
+    sameSite: "none",
+    partitioned: true,
   };
 
   res
@@ -276,6 +286,8 @@ export const deleteUser = asyncHandler(async (req, res) => {
   const options: CookieOptions = {
     httpOnly: true,
     secure: true,
+    sameSite: "none",
+    partitioned: true,
   };
   res
     .status(200)
