@@ -1,7 +1,7 @@
 import { TMessage } from "../types";
 import { throwFormattedError } from "../utils/errorHandler";
 
-const url = "https://who-sent-this-backend.vercel.app/api";
+const url = "https://who-sent-this.onrender.com/api";
 export const ApiGetUserName = async (
   id: string,
 ): Promise<string | null | void> => {

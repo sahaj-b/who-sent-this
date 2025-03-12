@@ -1,5 +1,5 @@
 import { TUser } from "../types";
-const url = "https://who-sent-this-backend.vercel.app/api/users";
+const url = "https://who-sent-this.onrender.com/api/users";
 import { throwFormattedError } from "../utils/errorHandler";
 
 export type Settings = {
