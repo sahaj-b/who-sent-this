@@ -71,12 +71,14 @@ export default function MessagesGridBox({
   getMessageById,
   BigMessage,
   emptyMessage,
+  refreshTrigger,
 }: {
   heading: string | React.ReactNode;
   getMessages: () => Promise<TMessage[] | void>;
   getMessageById?: (id: string) => Promise<TMessage | null | void>;
   BigMessage: BigMessageType;
   emptyMessage: string;
+  refreshTrigger?: boolean;
 }) {
   const [texts, setMessages] = useState<TMessage[] | null>(null);
   const [loading, setLoading] = useState(false);
@@ -100,7 +102,7 @@ export default function MessagesGridBox({
         setMessages(msgs!);
       })
       .catch(toastifyAndThrowError);
-  }, []);
+  }, [refreshTrigger]);
 
   function reloadMessages() {
     setLoading(true);

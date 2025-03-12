@@ -17,6 +17,7 @@ export default function Questions() {
   const [createdQuestion, setCreatedQuestion] = useState<TMessage>(
     {} as TMessage,
   );
+  const [refreshTrigger, setRefreshTrigger] = useState(false);
   const [createButtonLoading, setCreateButtonLoading] = useState(false);
   const [responseMsg, setResponseMsg] = useState<TResponseMsg>(
     {} as TResponseMsg,
@@ -40,6 +41,7 @@ export default function Questions() {
       const question = await ApiPostQuestion(QuestionRef.current.value);
       setCreatedQuestion(question!);
       setResponseMsg({ message: "Question created", success: true });
+      setRefreshTrigger(!refreshTrigger);
     } catch (e: any) {
       setResponseMsg({ message: e.message, success: false });
     } finally {
@@ -124,6 +126,7 @@ export default function Questions() {
           getMessages={ApiGetQuestions}
           emptyMessage="No Questions Created yet"
           BigMessage={BigQuestion}
+          refreshTrigger={refreshTrigger}
         />
 
         {!user?.email ? (
