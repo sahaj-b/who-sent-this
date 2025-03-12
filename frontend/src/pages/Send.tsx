@@ -1,15 +1,10 @@
-import { Button } from "../components/Buttons";
 import { useParams } from "react-router";
 import Header from "../components/Header";
 import { ApiGetUserName, ApiSendMessage } from "../services/messageService";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Loading from "./Loading";
 import { toastifyAndThrowError } from "../utils/errorHandler";
-import { MessageInputBox } from "../components/InputBoxes";
-import Box from "../components/Box";
-import Toggle from "../components/Toggle";
-import { toast } from "react-toastify";
-import { Icon } from "@iconify/react/dist/iconify.js";
+import SendBox, { handleSendType } from "../components/SendBox";
 
 function InvalidUser({ id }: { id: string | undefined }) {
   return (
@@ -27,9 +22,6 @@ function InvalidUser({ id }: { id: string | undefined }) {
 export default function Send() {
   const [userName, setUserName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [allowReply, setAllowReply] = useState(true);
-  const [buttonLoading, setButtonLoading] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
   const { id } = useParams();
   useEffect(() => {
     id
@@ -42,27 +34,36 @@ export default function Send() {
       : setLoading(false);
   }, []);
 
-  async function handleSend(e: React.FormEvent) {
+  const handleSend: handleSendType = async (
+    e,
+    inputRef,
+    allowReply,
+    setButtonLoading,
+    setResponseMsg,
+  ) => {
     e.preventDefault();
     const message = inputRef.current?.value;
     if (!message) {
-      toast.error("Message cannot be empty");
+      setResponseMsg({ message: "Message cannot be empty", success: false });
     } else if (message.length > 600) {
-      toast.error("Message is too long");
+      setResponseMsg({ message: "Message is too long", success: false });
     } else {
       setButtonLoading(true);
       ApiSendMessage(message, id!, allowReply)
         .then(() => {
-          toast.success("Message sent");
+          setResponseMsg({
+            message: "Message sent",
+            success: true,
+          });
           setButtonLoading(false);
           inputRef.current!.value = "";
         })
         .catch((err) => {
           setButtonLoading(false);
-          toastifyAndThrowError(err);
+          setResponseMsg(err.message);
         });
     }
-  }
+  };
 
   if (loading) {
     return <Loading />;
@@ -75,39 +76,17 @@ export default function Send() {
   return (
     <>
       <Header />
-      <div className="w-screen px-3 mt-20">
-        <form>
-          <Box widthClass="w-[95%] max-w-2xl">
-            <span className="font-[Sigmar] text-4xl md:text-5xl text-primary/80">
-              Send to:{" "}
-              <span className="text-accent/90">
-                {userName ? userName : "Anonymous"}
-              </span>
+      <SendBox
+        heading={
+          <span className="font-[Sigmar] text-4xl md:text-5xl text-primary/80">
+            Send to:{" "}
+            <span className="text-accent/90">
+              {userName ? userName : "Anonymous"}
             </span>
-            <div>
-              <MessageInputBox ref={inputRef} />
-              <Toggle
-                bool={allowReply}
-                setBool={setAllowReply}
-                label="Allow reply for this message"
-                className="mt-3 ml-1"
-              />
-            </div>
-            <Button
-              content={
-                <>
-                  Send &nbsp;
-                  <Icon icon="mdi:send" className="inline relative -top-0.5" />
-                </>
-              }
-              className="-mt-3"
-              type="submit"
-              onClick={handleSend}
-              loading={buttonLoading}
-            />
-          </Box>
-        </form>
-      </div>
+          </span>
+        }
+        handleSend={handleSend}
+      />
     </>
   );
 }

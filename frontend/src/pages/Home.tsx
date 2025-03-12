@@ -6,6 +6,7 @@ import ProfileButton from "../components/ProfileButton";
 import { useState } from "react";
 import { toastifyAndThrowError } from "../utils/errorHandler";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import GlowDrop from "../components/GlowDrop";
 export default function Home() {
   const auth = useAuth();
   const [buttonLoading, setButtonLoading] = useState(false);
@@ -35,6 +36,7 @@ export default function Home() {
   }
   return (
     <>
+      <GlowDrop />
       <div className="flex justify-end px-3 pt-4 pb-3">
         <ProfileButton />
       </div>

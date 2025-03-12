@@ -49,34 +49,47 @@ export default function ProfileButton() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen]);
-
   return (
     <div className="relative" ref={dropdownRef}>
       <Icon
         icon="mdi:account"
-        className="inset-ring-2 inset-ring-accent/20 text-primary bg-secondary/60 size-12 rounded-full p-2 -mt-1 cursor-pointer"
+        className="inset-ring-2 inset-ring-accent/20 text-primary bg-secondary/60 size-12 rounded-full p-2 cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       />
       <div
         className={`ring-primary bg-secondary/50 shadow-background absolute right-1/2 z-10 mt-1 translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-xl shadow-md ring-1 backdrop-blur-sm transition
         ${isOpen ? "translate-x-1/4 translate-y-0 scale-100" : "scale-0"}`}
       >
-        <Element
-          text="Inbox"
-          icon="mdi:inbox-arrow-down"
-          onClick={() => {
-            navigate("/inbox");
-            setIsOpen(false);
-          }}
-        />
-        <Element
-          text="Settings"
-          icon="mdi:settings"
-          onClick={() => {
-            navigate("/settings");
-            setIsOpen(false);
-          }}
-        />
+        {auth.user &&
+        (auth.user?.email ||
+          window.localStorage.getItem("accountOrReceiver") === "true") ? (
+          <>
+            <Element
+              text="Inbox"
+              icon="mdi:inbox-arrow-down"
+              onClick={() => {
+                navigate("/inbox");
+                setIsOpen(false);
+              }}
+            />
+            <Element
+              text="Questions"
+              icon="mdi:frequently-asked-questions"
+              onClick={() => {
+                navigate("/Questions");
+                setIsOpen(false);
+              }}
+            />
+            <Element
+              text="Settings"
+              icon="mdi:settings"
+              onClick={() => {
+                navigate("/settings");
+                setIsOpen(false);
+              }}
+            />
+          </>
+        ) : null}
         {user?.email ? (
           <Element
             text="Logout"

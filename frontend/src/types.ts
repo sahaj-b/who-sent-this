@@ -12,9 +12,14 @@ export type TMessage = {
   _id: string;
   text: string;
   sentBy?: string;
-  receivedBy: string;
+  receivedBy?: string;
   allowReply: boolean;
   repliedToMessageId?: string;
   createdAt: Date;
   updatedAt: Date;
+};
+
+export type TResponseMsg = {
+  message: string;
+  success: boolean;
 };

@@ -9,6 +9,7 @@ import Toggle from "../components/Toggle";
 import { toast } from "react-toastify";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useNavigate } from "react-router";
+import { TResponseMsg } from "../types";
 
 function DeleteComponent({ auth }: { auth: AuthContextType }) {
   const [deleteClicked, setDeleteClicked] = useState(false);
@@ -91,23 +92,25 @@ export default function Settings() {
   const [newPassword, setNewPassword] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState(user!.name ?? "");
-  const [response, setResponse] = useState("");
+  const [responseMsg, setResponseMsg] = useState<TResponseMsg>(
+    {} as TResponseMsg,
+  );
   const [receivingPaused, setReceivingPaused] = useState(user!.receivingPaused);
   const [buttonLoading, setButtonLoading] = useState(false);
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
-    let responseMsg = "";
-    if (newPassword) responseMsg = isPasswordInvalid(newPassword);
+    let responseMsgMsg = "";
+    if (newPassword) responseMsgMsg = isPasswordInvalid(newPassword);
     if (
       !newPassword &&
       name === (user?.name ?? "") &&
       receivingPaused === user?.receivingPaused
     ) {
-      responseMsg = "No changes made";
+      responseMsgMsg = "No changes made";
     }
-    if (responseMsg) {
-      setResponse(responseMsg);
+    if (responseMsgMsg) {
+      setResponseMsg({ message: responseMsgMsg, success: false });
       return;
     }
     setButtonLoading(true);
@@ -118,11 +121,10 @@ export default function Settings() {
         name,
         receivingPaused,
       });
-      responseMsg = "Saved";
+      setResponseMsg({ message: "Saved", success: true });
     } catch (e: any) {
-      responseMsg = e.message;
+      setResponseMsg({ message: e.message, success: false });
     }
-    setResponse(responseMsg);
     setButtonLoading(false);
   }
   return (
@@ -169,10 +171,10 @@ export default function Settings() {
               <div
                 className={
                   "text-lg pl-2 pb-2 font-bold " +
-                  (response === "Saved" ? "text-green-300/80" : "text-accent")
+                  (responseMsg.success ? "text-green-300/80" : "text-accent")
                 }
               >
-                {response}
+                {responseMsg.message}
               </div>
               <Button type="submit" content="Save" loading={buttonLoading} />
             </div>

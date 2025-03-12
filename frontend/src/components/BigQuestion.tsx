@@ -1,15 +1,15 @@
 import { useNavigate } from "react-router";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useState } from "react";
-import { Tooltip } from "../components/Info";
 import { TMessage } from "../types";
 import { toastifyAndThrowError } from "../utils/errorHandler";
 import { Button, SecondaryButton } from "../components/Buttons";
 import { toast } from "react-toastify";
 import { ApiDeleteMessage } from "../services/messageService";
 import { BigMessageType } from "./MessagesGridBox";
+import ShareURL from "./ShareURL";
 
-const BigMessage: BigMessageType = ({
+const BigQuestion: BigMessageType = ({
   clickedMessage,
   setClickedMessage,
   setMessages,
@@ -35,44 +35,25 @@ const BigMessage: BigMessageType = ({
     }
   }
   return (
-    <div className="flex flex-col space-y-5">
-      <div className="w-full space-y-2 px-2 py-2 text-xl break-words whitespace-pre-line">
-        {clickedMessage?.[1] ? (
-          <div className="text-text/80 flex w-full items-end space-x-1 pr-7">
-            <Icon icon="mdi:reply" className="mb-3 inline size-6 shrink-0" />{" "}
-            <p className="bg-background/20 ring-text/20 max-w-full rounded-lg px-4 py-2 ring-1">
-              {clickedMessage?.[1]?.text}
-            </p>
-          </div>
-        ) : (
-          ""
-        )}
-        <div className="text-text/90 font-bold">{clickedMessage?.[0].text}</div>
+    <div className="flex flex-col space-y-5 items-center">
+      <div className="w-full space-y-2 px-2 py-2 text-xl text-text/90 font-bold break-words whitespace-pre-line">
+        {clickedMessage?.[0].text}
       </div>
+      <ShareURL url={"/reply/" + clickedMessage?.[0]._id} />
       <div className="flex w-xs justify-center space-x-4">
         <Button
-          disabled={!clickedMessage?.[0].allowReply}
           content={
             <>
-              {!clickedMessage?.[0]?.allowReply && (
-                <Tooltip
-                  content="This message doesn't allow replies"
-                  widthClass="w-full"
-                />
-              )}
               <Icon
                 icon="mdi:reply"
                 className="relative -top-0.5 inline size-6"
               />{" "}
-              Reply
+              Replies
             </>
           }
-          className="group relative w-auto"
+          className="group relative"
           onClick={() => {
-            {
-              clickedMessage?.[0].allowReply &&
-                navigate("/reply/" + clickedMessage?.[0]._id);
-            }
+            navigate("/replies/" + clickedMessage?.[0]._id);
           }}
         />
         <SecondaryButton
@@ -92,4 +73,4 @@ const BigMessage: BigMessageType = ({
   );
 };
 
-export default BigMessage;
+export default BigQuestion;

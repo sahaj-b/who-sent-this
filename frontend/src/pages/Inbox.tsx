@@ -1,13 +1,11 @@
 import { Link } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import Header from "../components/Header";
-import {
-  ApiDeleteMessage,
-  ApiGetMessageById,
-  ApiGetMessages,
-} from "../services/messageService";
-import GridBox from "../components/GridBox";
+import { ApiGetMessageById, ApiGetMessages } from "../services/messageService";
+import MessagesGridBox from "../components/MessagesGridBox";
 import ShareURL from "../components/ShareURL";
+import { SecondaryButton } from "../components/Buttons";
+import BigMessage from "../components/BigMessage";
 
 export default function Inbox() {
   const { user } = useAuth();
@@ -15,7 +13,7 @@ export default function Inbox() {
     <>
       <Header />
 
-      <div className="mx-4 flex flex-col items-center py-20">
+      <div className="mx-4 flex flex-col space-y-10 items-center py-20">
         {user?.receivingPaused && (
           <div className="text-text/70 mb-10 text-center text-lg">
             You have paused receiving messages.{" "}
@@ -24,19 +22,30 @@ export default function Inbox() {
             </Link>
           </div>
         )}
+        <div className="w-[90%] max-w-md">
+          <ShareURL
+            url={user!.shortId}
+            message="Share this link to receive messages"
+          />
+        </div>
 
-        <ShareURL
-          url={user!.shortId}
-          message="Share this link to receive messages"
-        />
+        <Link to="/questions">
+          <SecondaryButton
+            content={
+              <>
+                <span className="font-bold">Create/View</span> your{" "}
+                <span className="text-purple-300 font-bold"> Questions</span>
+              </>
+            }
+          />
+        </Link>
 
-        <div className="h-16"></div>
-
-        <GridBox
+        <MessagesGridBox
           heading="Inbox"
-          ApiGetTexts={ApiGetMessages}
-          ApiDeleteTextById={ApiDeleteMessage}
-          ApiGetTextById={ApiGetMessageById}
+          getMessages={ApiGetMessages}
+          getMessageById={ApiGetMessageById}
+          emptyMessage="No Messages Received yet"
+          BigMessage={BigMessage}
         />
 
         {!user?.email ? (

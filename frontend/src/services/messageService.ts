@@ -105,8 +105,10 @@ export const ApiDeleteMessage = async (id: string) => {
   }
 };
 
-export const ApiPostQuestion = async (text: string) => {
-  const res = await fetch(`${url}/questions`, {
+export const ApiPostQuestion = async (
+  text: string,
+): Promise<TMessage | void> => {
+  const res = await fetch(`${url}/messages/questions`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -122,8 +124,8 @@ export const ApiPostQuestion = async (text: string) => {
   }
 };
 
-export const ApiGetQuestions = async () => {
-  const res = await fetch(`${url}/questions`, {
+export const ApiGetQuestions = async (): Promise<TMessage[] | void> => {
+  const res = await fetch(`${url}/messages/questions`, {
     method: "GET",
     credentials: "include",
   });
@@ -131,5 +133,17 @@ export const ApiGetQuestions = async () => {
     return await res.json().then((body) => body.data);
   } else {
     return await throwFormattedError(res, "Getting questions");
+  }
+};
+
+export const ApiGetReplies = async (id: string): Promise<TMessage[] | void> => {
+  const res = await fetch(`${url}/messages/replies/${id}`, {
+    method: "GET",
+    credentials: "include",
+  });
+  if (res.ok) {
+    return await res.json().then((body) => body.data);
+  } else {
+    return await throwFormattedError(res, "Getting replies");
   }
 };

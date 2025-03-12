@@ -134,7 +134,7 @@ export function MessageInputBox({
   return (
     <textarea
       aria-label="Message"
-      className="bg-secondary/30 text-text focus:ring-primary/80 w-full resize-none rounded-md px-5 py-2 text-lg transition outline-none focus:ring-2"
+      className="bg-secondary/30 text-text focus:ring-primary/80 w-full resize-verticle rounded-md px-5 py-2 text-lg transition outline-none focus:ring-2"
       placeholder={placeholder}
       ref={ref}
     />

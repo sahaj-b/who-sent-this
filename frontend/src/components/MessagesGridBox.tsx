@@ -1,35 +1,41 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { useEffect, useState } from "react";
+import { JSX, useEffect, useState } from "react";
 import { Tooltip } from "../components/Info";
 import Box from "../components/Box";
 import { TMessage } from "../types";
 import { toastifyAndThrowError } from "../utils/errorHandler";
-import BigMessage from "./BigMessage";
+import BlurBox from "./BlurBox";
+import clampText from "../utils/clampText";
 
-function clampText(text: string, limit: number) {
-  const lines = text.split("\n");
-  return lines.length <= limit
-    ? text
-    : lines.slice(0, limit).join("\n") + "...";
-}
+export type BigMessageType = ({
+  clickedMessage,
+  setClickedMessage,
+  setMessages,
+}: {
+  clickedMessage: [TMessage, TMessage | null];
+  setClickedMessage: React.Dispatch<
+    React.SetStateAction<[TMessage, TMessage | null] | null>
+  >;
+  setMessages: React.Dispatch<React.SetStateAction<TMessage[] | null>>;
+}) => JSX.Element;
 
 function Message({
   message,
   setClickedMessage,
-  ApiGetTextById,
+  getMessageById,
 }: {
   message: TMessage;
   setClickedMessage: React.Dispatch<
     React.SetStateAction<[TMessage, TMessage | null] | null>
   >;
-  ApiGetTextById?: (id: string) => Promise<TMessage | null | void>;
+  getMessageById?: (id: string) => Promise<TMessage | null | void>;
 }) {
   const [repliedToMessage, setRepliedToMessage] = useState<TMessage | null>(
     null,
   );
   useEffect(() => {
-    if (ApiGetTextById && message.repliedToMessageId) {
-      ApiGetTextById(message.repliedToMessageId).then((msg) => {
+    if (getMessageById && message.repliedToMessageId) {
+      getMessageById(message.repliedToMessageId).then((msg) => {
         setRepliedToMessage(msg!);
       });
     }
@@ -40,12 +46,14 @@ function Message({
       onClick={() => setClickedMessage([message, repliedToMessage])}
     >
       {repliedToMessage ? (
-        <div className="text-text/50 -mb-1.5 pl-1 text-lg">
+        <div className="text-text/50 -mb-1.5 flex items-center pl-1 text-lg">
           <Icon
             icon="proicons:corner-radius"
-            className="mr-0.5 inline size-4"
+            className="relative top-1 mr-0.5 inline size-4 shrink-0"
           />
-          {clampText(repliedToMessage.text, 1)}
+          <span className="w-full overflow-hidden overflow-ellipsis">
+            {clampText(repliedToMessage.text, 1)}
+          </span>
         </div>
       ) : (
         ""
@@ -57,21 +65,23 @@ function Message({
   );
 }
 
-export default function GridBox({
+export default function MessagesGridBox({
   heading,
-  ApiGetTexts,
-  ApiDeleteTextById,
-  ApiGetTextById,
+  getMessages,
+  getMessageById,
+  BigMessage,
+  emptyMessage,
 }: {
-  heading: string;
-  ApiGetTexts: () => Promise<TMessage[] | void>;
-  ApiDeleteTextById?: (id: string) => Promise<void>;
-  ApiGetTextById?: (id: string) => Promise<TMessage | null | void>;
+  heading: string | React.ReactNode;
+  getMessages: () => Promise<TMessage[] | void>;
+  getMessageById?: (id: string) => Promise<TMessage | null | void>;
+  BigMessage: BigMessageType;
+  emptyMessage: string;
 }) {
-  const [texts, setTexts] = useState<TMessage[] | null>(null);
+  const [texts, setMessages] = useState<TMessage[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [refreshed, setRefreshed] = useState(false);
-  const [clickedText, setClickedText] = useState<
+  const [clickedMessage, setClickedMessage] = useState<
     [TMessage, TMessage | null] | null
   >(null);
 
@@ -85,18 +95,18 @@ export default function GridBox({
   }, [loading]);
 
   useEffect(() => {
-    ApiGetTexts()
+    getMessages()
       .then((msgs) => {
-        setTexts(msgs!);
+        setMessages(msgs!);
       })
       .catch(toastifyAndThrowError);
   }, []);
 
   function reloadMessages() {
     setLoading(true);
-    ApiGetTexts()
+    getMessages()
       .then((msgs) => {
-        setTexts(msgs!);
+        setMessages(msgs!);
         setLoading(false);
       })
       .catch((e) => {
@@ -104,7 +114,6 @@ export default function GridBox({
         toastifyAndThrowError(e);
       });
   }
-
   let messagesComponent = (
     <Icon
       icon="svg-spinners:pulse-rings-2"
@@ -114,8 +123,8 @@ export default function GridBox({
   if (texts) {
     if (texts.length === 0) {
       messagesComponent = (
-        <div className="text-text/70 mb-10 text-center text-xl">
-          No Messages Received yet
+        <div className="text-text/70 mb-5 text-center text-xl">
+          {emptyMessage}
         </div>
       );
     } else {
@@ -125,8 +134,8 @@ export default function GridBox({
             <Message
               key={msg._id}
               message={msg}
-              setClickedMessage={setClickedText}
-              ApiGetTextById={ApiGetTextById}
+              setClickedMessage={setClickedMessage}
+              getMessageById={getMessageById}
             />
           ))}
         </div>
@@ -136,19 +145,25 @@ export default function GridBox({
 
   return (
     <>
-      <BigMessage
-        setTexts={setTexts}
-        setClickedText={setClickedText}
-        clickedMessage={clickedText!}
-        ApiDeleteTextById={ApiDeleteTextById}
-      />
-      <Box widthClass="w-[90%] max-w-5xl">
-        <div className="-mt-2 flex items-center justify-between">
-          <div className="text-primary font-[Sigmar] text-5xl opacity-90 md:text-6xl">
+      <BlurBox
+        show={!!clickedMessage}
+        setShowFalse={() => setClickedMessage(null)}
+      >
+        <BigMessage
+          clickedMessage={clickedMessage!}
+          setClickedMessage={() => {
+            setClickedMessage(null);
+          }}
+          setMessages={setMessages}
+        />
+      </BlurBox>
+      <Box widthClass="relative w-[90%] max-w-5xl">
+        <div className="flex items-end justify-between">
+          <div className="text-primary w-[85%] font-[Sigmar] text-5xl opacity-90 md:text-6xl">
             {heading}
           </div>
           <div
-            className="group text-primary bg-secondary/50 hover:bg-secondary/70 relative -top-0.5 inline cursor-pointer rounded-full p-1.5 transition"
+            className="group text-primary bg-secondary/50 md:-top-1 hover:bg-secondary/70 relative inline cursor-pointer rounded-full p-1.5 transition"
             onClick={reloadMessages}
           >
             <Tooltip

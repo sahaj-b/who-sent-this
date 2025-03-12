@@ -12,11 +12,16 @@ function URL({ url }: { url: string }) {
   }, [copied]);
 
   return (
-    <div className="shadow-accent/15 bg-secondary/30 ring-accent/50 text-text mx-auto mt-0.5 flex w-full max-w-sm justify-between rounded-xl text-lg shadow-xl ring-1">
+    <div className="shadow-accent/15 bg-secondary/30 ring-accent/50 text-text mx-auto mt-0.5 flex w-[90%] max-w-md justify-between rounded-xl text-lg shadow-xl ring-1">
       <div className="bg-accent/50 flex items-center rounded-l-xl p-2">
         <Icon icon="mdi:link-variant" className="size-6" />
       </div>
-      <div className="text-text/90 overflow-x-auto p-2 pl-3 font-bold">
+      <div
+        className="text-text/90 text-nowrap overflow-x-auto p-2 pl-3 font-bold"
+        style={{
+          scrollbarWidth: "none",
+        }}
+      >
         {url}
       </div>
       <div className="flex">
@@ -53,14 +58,15 @@ export default function ShareURL({
   message,
 }: {
   url: string;
-  message: string;
+  message?: string;
 }) {
+  if (!message) return <URL url={url} />;
   return (
-    <>
-      <div className="from-accent/50 via-primary to-accent/40 bg-primary text-background rounded-t-xl bg-linear-30 px-3 py-2 text-xl font-bold">
+    <div className="w-full flex flex-col items-center">
+      <div className="w-[80%] text-center from-accent/50 via-primary to-accent/40 bg-primary text-background rounded-t-xl bg-linear-30 px-3 py-2 text-lg font-bold">
         {message}
       </div>
       <URL url={url} />
-    </>
+    </div>
   );
 }
