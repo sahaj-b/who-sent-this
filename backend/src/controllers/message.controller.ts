@@ -12,26 +12,28 @@ export const postQuestion = asyncHandler(async (req, res) => {
   if (!user) {
     throw new ApiError(400, "Error while getting current user");
   }
-  let { text: question } = req.body;
-  question = question?.trim();
-  if (!question || typeof question !== "string") {
+  let { text: questionText } = req.body;
+  questionText = questionText?.trim();
+  if (!questionText || typeof questionText !== "string") {
     throw new ApiError(400, "Invalid Question Text");
   }
-  if (question.length > MAX_MESSAGE_CHARACTERS) {
+  if (questionText.length > MAX_MESSAGE_CHARACTERS) {
     throw new ApiError(
       400,
       `Question exceeds max character limit (${MAX_MESSAGE_CHARACTERS})`,
     );
   }
-  await Message.create({
+  const question = await Message.create({
     sentBy: user.shortId,
     allowReply: true,
-    text: question,
+    text: questionText,
   });
-
+  const { sentBy, ...questionResponse } = question.toObject();
   res
     .status(200)
-    .json(new ApiResponse(200, "Question posted successfully", {}));
+    .json(
+      new ApiResponse(200, "Question posted successfully", questionResponse),
+    );
 });
 
 export const sendMessage = asyncHandler(async (req, res) => {
@@ -145,7 +147,10 @@ export const deleteMessage = asyncHandler(async (req, res) => {
   if (!message) {
     throw new ApiError(400, "Invalid message ID provided");
   }
-  if (message?.receivedBy !== user.shortId) {
+  if (!message.receivedBy && message.sentBy !== user.shortId) {
+    throw new ApiError(401, "You are not the sender of this question");
+  }
+  if (message.receivedBy && message.receivedBy !== user.shortId) {
     throw new ApiError(401, "You are not the recipient of this message");
   }
   await Message.findByIdAndDelete(id);
@@ -202,4 +207,31 @@ export const getQuestions = asyncHandler(async (_, res) => {
   res
     .status(200)
     .json(new ApiResponse(200, "Questions fetched successfully", questions));
+});
+
+export const getReplies = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  if (!id) {
+    throw new ApiError(400, "No message ID provided");
+  }
+  const user = res.locals.user;
+  if (!user) {
+    throw new ApiError(400, "Error while getting current user");
+  }
+  if (!Types.ObjectId.isValid(id)) {
+    throw new ApiError(404, "Invalid message ID provided");
+  }
+  const message = await Message.findById(id);
+  if (!message) {
+    throw new ApiError(404, "Invalid message ID provided");
+  }
+  if (message.sentBy !== user.shortId) {
+    throw new ApiError(401, "You are not the sender of this message/question");
+  }
+  const replies = await Message.find({ repliedToMessageId: id })
+    .select("-sentBy")
+    .sort({ createdAt: -1 });
+  res
+    .status(200)
+    .json(new ApiResponse(200, "Replies fetched successfully", replies));
 });

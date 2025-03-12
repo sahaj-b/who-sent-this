@@ -100,5 +100,5 @@ POST {{server}}/messages/questions
   "text": "QUESTION LOL"
 }
 
-### get question
-GET {{server}}/messages/questions
+### get replies
+GET {{server}}/messages/replies/67cc79011918a6e6b2d7a908
