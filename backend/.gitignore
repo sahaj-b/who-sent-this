@@ -17,3 +17,5 @@ node_modules/
 
 #Typescript compiled files
 dist/
+
+.vercel
