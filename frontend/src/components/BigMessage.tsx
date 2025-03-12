@@ -49,7 +49,7 @@ const BigMessage: BigMessageType = ({
         )}
         <div className="text-text/90 font-bold">{clickedMessage?.[0].text}</div>
       </div>
-      <div className="flex w-xs justify-center space-x-4">
+      <div className="m-auto flex w-xs justify-center space-x-4">
         <Button
           disabled={!clickedMessage?.[0].allowReply}
           content={
