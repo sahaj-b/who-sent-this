@@ -1,3 +1,4 @@
 # Who Sent This
 ## Backend MVP completed
-## Frontend WIP
+## Frontend MVP completed
+## Currently testing and setting up hosting
