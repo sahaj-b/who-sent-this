@@ -62,7 +62,7 @@ export default function Questions() {
         {createdQuestion._id ? (
           <ShareURL
             message="Share this link to receive replies"
-            url={"/reply/" + createdQuestion._id}
+            url={window.location.origin + "/reply/" + createdQuestion._id}
           />
         ) : (
           <div className="w-[80vw] max-w-xl p-1 pr-3">

@@ -24,7 +24,7 @@ export default function Inbox() {
         )}
         <div className="w-[90%] max-w-md">
           <ShareURL
-            url={user!.shortId}
+            url={window.location.origin + "/send/" + user!.shortId}
             message="Share this link to receive messages"
           />
         </div>
