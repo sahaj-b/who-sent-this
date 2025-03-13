@@ -39,7 +39,9 @@ const BigQuestion: BigMessageType = ({
       <div className="w-full space-y-2 px-2 py-2 text-xl text-text/90 font-bold break-words whitespace-pre-line">
         {clickedMessage?.[0].text}
       </div>
-      <ShareURL url={"/reply/" + clickedMessage?.[0]._id} />
+      <ShareURL
+        url={window.location.origin + "/reply/" + clickedMessage?.[0]._id}
+      />
       <div className="flex w-xs justify-center space-x-4">
         <Button
           content={
