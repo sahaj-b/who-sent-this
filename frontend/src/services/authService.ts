@@ -1,5 +1,5 @@
 import { TUser } from "../types";
-const url = "https://who-sent-this.onrender.com/api/users";
+const usersUrl = import.meta.env.VITE_SERVER_URL + "/users";
 import { throwFormattedError } from "../utils/errorHandler";
 
 export type Settings = {
@@ -13,7 +13,7 @@ export async function ApiLogin(
   email: string,
   password: string,
 ): Promise<TUser | void> {
-  const res = await fetch(`${url}/login`, {
+  const res = await fetch(`${usersUrl}/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -31,7 +31,7 @@ export async function ApiLogin(
 }
 
 export async function ApiLogout() {
-  const res = await fetch(`${url}/logout`, {
+  const res = await fetch(`${usersUrl}/logout`, {
     method: "POST",
     credentials: "include",
   });
@@ -42,7 +42,7 @@ export async function ApiLogout() {
 }
 
 export async function ApiRegisterAnonymous(): Promise<TUser | void> {
-  const res = await fetch(`${url}/register-anonymous`, {
+  const res = await fetch(`${usersUrl}/register-anonymous`, {
     method: "POST",
     credentials: "include",
   });
@@ -60,7 +60,7 @@ export async function ApiRegisterWithEmail(
   password: string,
   name: string | undefined = undefined,
 ): Promise<TUser | void> {
-  const res = await fetch(`${url}/register-with-email`, {
+  const res = await fetch(`${usersUrl}/register-with-email`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -82,7 +82,7 @@ export async function ApiRegisterEmail(
   password: string,
   name?: string,
 ): Promise<TUser | void> {
-  const res = await fetch(`${url}/add-email`, {
+  const res = await fetch(`${usersUrl}/add-email`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -100,7 +100,7 @@ export async function ApiRegisterEmail(
 }
 
 export async function ApiRefreshToken() {
-  const res = await fetch(`${url}/refresh-token`, {
+  const res = await fetch(`${usersUrl}/refresh-token`, {
     method: "POST",
     credentials: "include",
   });
@@ -109,7 +109,7 @@ export async function ApiRefreshToken() {
 }
 
 export async function ApiUserInfo(): Promise<TUser | void> {
-  const res = await fetch(`${url}/me`, {
+  const res = await fetch(`${usersUrl}/me`, {
     credentials: "include",
   });
 
@@ -124,7 +124,7 @@ export async function ApiUserInfo(): Promise<TUser | void> {
 export async function ApiChangeUserSettings(
   settings: Settings,
 ): Promise<TUser | void> {
-  const res = await fetch(`${url}/me`, {
+  const res = await fetch(`${usersUrl}/me`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -142,7 +142,7 @@ export async function ApiChangeUserSettings(
 }
 
 export async function ApiDeleteUser(password?: string) {
-  const res = await fetch(`${url}/me`, {
+  const res = await fetch(`${usersUrl}/me`, {
     method: "DELETE",
     credentials: "include",
     headers: {
