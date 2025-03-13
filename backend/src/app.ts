@@ -13,7 +13,7 @@ app.set("trust proxy", 1);
 
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: process.env.CORS_ORIGIN?.split(" "),
     credentials: true,
   }),
 );
@@ -34,9 +34,6 @@ app.get("/ping", (_, res) => {
 //using routers as a middleware
 app.use("/api/users", userRouter);
 app.use("/api/messages", messageRouter);
-// router
-//   .route("/ping")
-//   .get(asyncHandler(async (_, res) => res.send("pong: " + Date())));
 
 app.use(errorHandler);
 
