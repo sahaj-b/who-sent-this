@@ -9,7 +9,7 @@ import errorHandler from "./middlewares/error.middleware";
 
 const app = express();
 
-app.set('trust proxy', 1);
+app.set("trust proxy", 1);
 
 app.use(
   cors({
@@ -27,9 +27,16 @@ app.use(cookieParser());
 app.use(express.json({ limit: "16kb" }));
 // app.use(express.urlencoded({ extended: true }));
 
+app.get("/ping", (_, res) => {
+  res.send("pong: " + Date());
+});
+
 //using routers as a middleware
 app.use("/api/users", userRouter);
 app.use("/api/messages", messageRouter);
+// router
+//   .route("/ping")
+//   .get(asyncHandler(async (_, res) => res.send("pong: " + Date())));
 
 app.use(errorHandler);
 
