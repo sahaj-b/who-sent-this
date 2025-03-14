@@ -9,10 +9,21 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import GlowDrop from "../components/GlowDrop";
 import GridBackground from "../components/GridBackground";
 
-function Card({ children }: { children: React.ReactNode }) {
+function Card({
+  icon,
+  desc,
+}: {
+  icon: string;
+  desc: React.ReactNode;
+  fade?: boolean;
+}) {
   return (
     <div className="bg-secondary/20 ring-accent/30 flex shrink-0 flex-col items-center gap-y-4 rounded-2xl px-4 py-5 ring-1">
-      {children}
+      <div className="relative">
+        <Icon icon={icon} className="text-primary stroke-accent/20 size-22" />
+        <div className="absolute top-0 left-0 h-full w-full bg-linear-60 via-[#170C2955] to-[#170C29]" />
+      </div>
+      <div className="text-text/90 text-2xl text-center">{desc}</div>
     </div>
   );
 }
@@ -55,7 +66,7 @@ export default function Home() {
   return (
     <>
       <GridBackground />
-      <GlowDrop />
+      <GlowDrop home />
       <div className="flex justify-end px-3 pt-4 pb-3">
         <ProfileButton />
       </div>
@@ -111,53 +122,47 @@ export default function Home() {
         )}
       </div>
       <div className="mx-auto mt-20 grid w-[90%] max-w-xl grid-cols-2 gap-5 pb-20">
-        <Card>
-          <Icon
-            icon="mdi:link-variant"
-            className="text-primary stroke-accent/20 size-22"
-          />
-          <div className="text-text/90 text-2xl text-center">
-            Share <Highlight text="Links" />
-          </div>
-        </Card>
-        <Card>
-          <Icon
-            icon="mdi:file-question-outline"
-            className="text-primary stroke-accent/20 size-22"
-          />
-          <div className="text-text/90 text-2xl text-center">
-            Post <Highlight text="Questions" />
-          </div>
-        </Card>
-        <Card>
-          <Icon
-            icon="uil:message"
-            className="text-primary stroke-accent/20 size-22"
-          />
-          <div className="text-text/90 text-2xl text-center">
-            <Highlight text="Send" />, <Highlight text="Receive" />,{" "}
-            <Highlight
-              text="Reply
+        <Card
+          icon="mdi:link-variant"
+          desc={
+            <div className="text-text/90 text-2xl text-center">
+              Share <Highlight text="Links" />
+            </div>
+          }
+        />
+        <Card
+          icon="mdi:file-question-outline"
+          desc={
+            <div className="text-text/90 text-2xl text-center">
+              Post <Highlight text="Questions" />
+            </div>
+          }
+        />
+        <Card
+          icon="uil:message"
+          desc={
+            <div className="text-text/90 text-2xl text-center">
+              <Highlight text="Send" />, <Highlight text="Receive" />,{" "}
+              <Highlight
+                text="Reply
           "
-            />
-          </div>
-        </Card>
-        <Card>
-          <div className="relative">
-            <Icon
-              icon="mdi:incognito"
-              className="text-primary stroke-accent/20 size-22"
-            />
-            <div className="absolute top-0 left-0 h-full w-full bg-radial from-transparent via-[#200C1CCC] to-[#200C1C]" />
-          </div>
-          <div className="text-text/90 text-2xl text-center">
-            Completely{" "}
-            <Highlight
-              text="Anonymous
+              />
+            </div>
+          }
+        />
+        <Card
+          icon="mdi:incognito"
+          desc={
+            <div className="text-text/90 text-2xl text-center">
+              Completely{" "}
+              <Highlight
+                text="Anonymous
           "
-            />
-          </div>
-        </Card>
+              />
+            </div>
+          }
+          fade
+        />
       </div>
     </>
   );

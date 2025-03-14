@@ -10,7 +10,7 @@ export default function Box({
   return (
     <div
       className={
-        "ring-primary/80 bg-secondary/20 shadow-primary/20 mx-auto flex flex-col space-y-10 rounded-2xl px-8 py-8 shadow-xl ring-2 " +
+        "ring-primary/70 bg-secondary/15 shadow-primary/15 mx-auto flex flex-col space-y-10 rounded-2xl px-8 py-8 shadow-xl ring-2 " +
         widthClass
       }
     >

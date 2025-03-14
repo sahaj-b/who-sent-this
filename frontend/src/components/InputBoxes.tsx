@@ -13,7 +13,7 @@ export function InputBox({
   placeholder = "",
   type = "text",
   onChange = () => {},
-  ringColorClass = "focus:ring-primary/80",
+  ringColorClass = "focus:ring-primary/70",
   className = "",
   value,
 }: {
@@ -29,7 +29,7 @@ export function InputBox({
       type={type}
       aria-label={type}
       className={
-        "bg-secondary/30 text-text w-full rounded-md px-5 py-2 text-lg transition focus:ring-2 focus:outline-none " +
+        "bg-secondary/25 text-text w-full rounded-md px-5 py-2 text-lg transition focus:ring-2 focus:outline-none " +
         ringColorClass +
         " " +
         className
