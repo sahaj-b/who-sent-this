@@ -28,11 +28,12 @@ function Card({
   );
 }
 
-function Highlight({ text }: { text: string }) {
+function Underline({ text }: { text: string }) {
   return (
-    <span className="text-text before:bg-accent/80 relative opacity-90 before:absolute before:bottom-0 before:-z-10 before:-ml-0.5 before:h-2.5 before:w-[102%] before:-rotate-[0.5deg] md:before:h-3">
-      {text}
-    </span>
+    <mark className="bg-transparent text-text relative whitespace-normal px-1 -mx-1">
+      <span className="relative z-10">{text}</span>
+      <span className="absolute inset-x-0 bottom-0 w-[98%] h-2.5 md:h-3 bg-accent/80 -rotate-[0.5deg] transform"></span>
+    </mark>
   );
 }
 
@@ -71,8 +72,8 @@ export default function Home() {
         <ProfileButton />
       </div>
       <WhoSentThis className="mt-7 text-[2.9rem] md:mb-10 md:text-6xl" />
-      <p className="text-text mx-8 mt-5 text-center text-xl opacity-90 md:text-2xl">
-        Send and receive <Highlight text="Anonymous Messages" />
+      <p className="text-nowrap text-text mx-6 mt-5 text-center text-xl opacity-90 md:text-2xl">
+        Send and receive <Underline text="Anonymous Messages" />
         <br />
         without revealing your identity
       </p>
@@ -126,7 +127,7 @@ export default function Home() {
           icon="mdi:link-variant"
           desc={
             <div className="text-text/90 text-2xl text-center">
-              Share <Highlight text="Links" />
+              Share <Underline text="Links" />
             </div>
           }
         />
@@ -134,7 +135,7 @@ export default function Home() {
           icon="mdi:file-question-outline"
           desc={
             <div className="text-text/90 text-2xl text-center">
-              Post <Highlight text="Questions" />
+              Post <Underline text="Questions" />
             </div>
           }
         />
@@ -142,8 +143,8 @@ export default function Home() {
           icon="uil:message"
           desc={
             <div className="text-text/90 text-2xl text-center">
-              <Highlight text="Send" />, <Highlight text="Receive" />,{" "}
-              <Highlight
+              <Underline text="Send" />, <Underline text="Receive" />,{" "}
+              <Underline
                 text="Reply
           "
               />
@@ -154,14 +155,9 @@ export default function Home() {
           icon="mdi:incognito"
           desc={
             <div className="text-text/90 text-2xl text-center">
-              Completely{" "}
-              <Highlight
-                text="Anonymous
-          "
-              />
+              Completely <Underline text="Anonymous" />
             </div>
           }
-          fade
         />
       </div>
     </>
