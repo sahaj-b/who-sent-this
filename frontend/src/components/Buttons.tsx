@@ -23,7 +23,7 @@ export function Button({
         (disabled
           ? "text-text/90 cursor-not-allowed bg-gray-500/30 ring-offset-2"
           : "from-primary/80 via-primary to-primary/60 bg-accent/80 text-background md:hover:bg-accent/80 cursor-pointer bg-linear-60 transition duration-300 md:ring-offset-0 md:hover:ring-offset-2") +
-        " ring-accent/80 ring-offset-background shadow-primary/20 w-full rounded-xl px-5 py-2 text-xl font-semibold shadow-2xl ring-2 ring-offset-2" +
+        " ring-accent/80 ring-offset-background shadow-primary/20 z-10 w-full rounded-xl px-5 py-2 text-xl font-semibold shadow-2xl ring-2 ring-offset-2" +
         " " +
         className +
         " " +
@@ -58,7 +58,7 @@ export function SecondaryButton({
       type={type}
       onClick={onClick}
       className={
-        "inset-ring-primary text-text bg-secondary/60 w-full rounded-xl px-5 py-3 text-xl inset-ring-1 transition duration-300 hover:cursor-pointer hover:inset-ring-2 " +
+        "inset-ring-primary text-text bg-secondary/60 z-10 w-full rounded-xl px-5 py-3 text-xl inset-ring-1 transition duration-300 hover:cursor-pointer hover:inset-ring-2 " +
         className
       }
     >

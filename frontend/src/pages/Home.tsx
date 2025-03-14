@@ -7,6 +7,24 @@ import { useState } from "react";
 import { toastifyAndThrowError } from "../utils/errorHandler";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import GlowDrop from "../components/GlowDrop";
+import GridBackground from "../components/GridBackground";
+
+function Card({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="bg-secondary/20 ring-accent/30 flex shrink-0 flex-col items-center gap-y-4 rounded-2xl px-4 py-5 ring-1">
+      {children}
+    </div>
+  );
+}
+
+function Highlight({ text }: { text: string }) {
+  return (
+    <span className="text-text before:bg-accent/80 relative opacity-90 before:absolute before:bottom-0 before:-z-10 before:-ml-0.5 before:h-2.5 before:w-[102%] before:-rotate-[0.5deg] md:before:h-3">
+      {text}
+    </span>
+  );
+}
+
 export default function Home() {
   const auth = useAuth();
   const [buttonLoading, setButtonLoading] = useState(false);
@@ -36,13 +54,16 @@ export default function Home() {
   }
   return (
     <>
+      <GridBackground />
       <GlowDrop />
       <div className="flex justify-end px-3 pt-4 pb-3">
         <ProfileButton />
       </div>
-      <WhoSentThis className="mt-7 text-[2.5rem] sm:text-5xl md:text-6xl" />
-      <p className="text-text mx-8 mt-5 text-center text-lg opacity-80 md:text-xl">
-        Send and receive anonymous messages without revealing your identity
+      <WhoSentThis className="mt-7 text-[2.9rem] md:mb-10 md:text-6xl" />
+      <p className="text-text mx-8 mt-5 text-center text-xl opacity-90 md:text-2xl">
+        Send and receive <Highlight text="Anonymous Messages" />
+        <br />
+        without revealing your identity
       </p>
       <div className="mt-10 flex justify-center">
         {auth.user &&
@@ -78,7 +99,7 @@ export default function Home() {
                 <div className="flex items-center">
                   <Icon
                     icon="mdi:anonymous"
-                    className="bg-secondary relative size-10 mr-3 rounded-full p-1"
+                    className="bg-secondary relative mr-3 size-10 rounded-full p-1"
                   />
                   <span>Guest</span>
                 </div>
@@ -88,6 +109,55 @@ export default function Home() {
             />
           </div>
         )}
+      </div>
+      <div className="mx-auto mt-20 grid w-[90%] max-w-xl grid-cols-2 gap-5 pb-20">
+        <Card>
+          <Icon
+            icon="mdi:link-variant"
+            className="text-primary stroke-accent/20 size-22"
+          />
+          <div className="text-text/90 text-2xl text-center">
+            Share <Highlight text="Links" />
+          </div>
+        </Card>
+        <Card>
+          <Icon
+            icon="mdi:file-question-outline"
+            className="text-primary stroke-accent/20 size-22"
+          />
+          <div className="text-text/90 text-2xl text-center">
+            Post <Highlight text="Questions" />
+          </div>
+        </Card>
+        <Card>
+          <Icon
+            icon="uil:message"
+            className="text-primary stroke-accent/20 size-22"
+          />
+          <div className="text-text/90 text-2xl text-center">
+            <Highlight text="Send" />, <Highlight text="Receive" />,{" "}
+            <Highlight
+              text="Reply
+          "
+            />
+          </div>
+        </Card>
+        <Card>
+          <div className="relative">
+            <Icon
+              icon="mdi:incognito"
+              className="text-primary stroke-accent/20 size-22"
+            />
+            <div className="absolute top-0 left-0 h-full w-full bg-radial from-transparent via-[#200C1CCC] to-[#200C1C]" />
+          </div>
+          <div className="text-text/90 text-2xl text-center">
+            Completely{" "}
+            <Highlight
+              text="Anonymous
+          "
+            />
+          </div>
+        </Card>
       </div>
     </>
   );
