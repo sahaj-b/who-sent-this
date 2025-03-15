@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import Box from "./Box";
 import { MessageInputBox } from "./InputBoxes";
 import Toggle from "./Toggle";
-import { Button } from "./Buttons";
+import { Button, SecondaryButton } from "./Buttons";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useNavigate } from "react-router";
 import { TResponseMsg } from "../types";
@@ -57,31 +57,43 @@ export default function SendBox({
               {responseMsg.message}
             </div>
           )}
-          <Button
-            content={
-              <>
-                {responseMsg.success ? "Go to Inbox" : "Send"} &nbsp;
-                <Icon
-                  icon={responseMsg.success ? "mdi:inbox" : "mdi:send"}
-                  className="relative -top-0.5 inline"
-                />
-              </>
-            }
-            className="-mt-3"
-            type="submit"
-            loading={buttonLoading}
-            onClick={(e) => {
-              if (responseMsg.success) navigate("/inbox");
-              else
-                handleSend(
-                  e,
-                  inputRef,
-                  allowReply,
-                  setButtonLoading,
-                  setResponseMsg,
-                );
-            }}
-          />
+          <div className="flex flex-col items-center sm:flex-row justify-center gap-3 text-nowrap">
+            <Button
+              content={
+                <>
+                  {responseMsg.success ? "Send Another" : "Send"} &nbsp;
+                  <Icon icon="mdi:send" className="relative -top-0.5 inline" />
+                </>
+              }
+              type="submit"
+              loading={buttonLoading}
+              onClick={(e) => {
+                responseMsg.success
+                  ? setResponseMsg({} as TResponseMsg)
+                  : handleSend(
+                      e,
+                      inputRef,
+                      allowReply,
+                      setButtonLoading,
+                      setResponseMsg,
+                    );
+              }}
+            />
+            {responseMsg.success ? (
+              <SecondaryButton
+                content={
+                  <>
+                    Go to Inbox
+                    <Icon
+                      icon="mdi:inbox"
+                      className="relative -top-0.5 inline"
+                    />
+                  </>
+                }
+                onClick={() => navigate("/Inbox")}
+              />
+            ) : null}
+          </div>
         </Box>
       </form>
     </div>
