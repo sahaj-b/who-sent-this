@@ -21,7 +21,7 @@ function Card({
     <div className="bg-secondary/20 ring-accent/30 flex shrink-0 flex-col items-center gap-y-4 rounded-2xl px-4 py-5 ring-1">
       <div className="relative">
         <Icon icon={icon} className="text-primary stroke-accent/20 size-22" />
-        <div className="absolute top-0 left-0 h-full w-full bg-linear-60 via-[#170C2955] to-[#170C29]" />
+        <div className="absolute top-0 left-0 h-full w-full bg-linear-60 via-[#200C1C55] to-[#200C1C]" />
       </div>
       <div className="text-text/90 text-2xl text-center">{desc}</div>
     </div>
