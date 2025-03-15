@@ -33,7 +33,7 @@ export default function Login() {
     try {
       await auth.login(email, password);
       toast.success("Logged in successfully");
-      if (user) navigate("/inbox");
+      navigate("/inbox");
     } catch (e: any) {
       setError(e.message);
     }
