@@ -95,7 +95,6 @@ export default function Reply() {
           </>
         }
         handleSend={handleSend}
-        replyBox
       />
     </>
   );
