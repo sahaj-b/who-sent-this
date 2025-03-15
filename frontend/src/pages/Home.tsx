@@ -30,7 +30,7 @@ function Card({
 
 function Underline({ text }: { text: string }) {
   return (
-    <mark className="bg-transparent text-text relative whitespace-normal px-1 -mx-1">
+    <mark className="bg-transparent text-text relative px-1 -mx-1">
       <span className="relative z-10">{text}</span>
       <span className="absolute inset-x-0 bottom-0 w-[98%] h-2.5 md:h-3 bg-accent/80 -rotate-[0.5deg] transform"></span>
     </mark>
